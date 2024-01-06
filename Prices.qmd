@@ -1,0 +1,46 @@
+---
+title: "Prices"
+---
+
+```{r setup}
+#| include: false
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+
+library(tidyverse)
+barchart_key <- Sys.getenv("BARCHART_Key")
+```
+
+<https://forms.gle/PscmhTrE13roMsw37>
+
+```{r}
+DATA1 <- read.csv(url(paste0("http://ondemand.websol.barchart.com/getHistory.csv?apikey=", barchart_key ,"&symbol=ZC*1&type=dailyNearest&startDate=20190101"))) %>%
+  mutate(Date = as.Date(tradingDay)) %>% 
+  select(symbol, Date, close) %>%
+  mutate(symbol = substr(symbol, 1,2)) 
+
+DATA2 <- read.csv(url(paste0("http://ondemand.websol.barchart.com/getHistory.csv?apikey=", barchart_key ,"&symbol=ZS*1&type=dailyNearest&startDate=20190101"))) %>%
+  mutate(Date = as.Date(tradingDay)) %>% 
+  select(symbol, Date, close) %>%
+  mutate(symbol = substr(symbol, 1,2))
+
+DATA3 <- read.csv(url(paste0("http://ondemand.websol.barchart.com/getHistory.csv?apikey=", barchart_key ,"&symbol=ZW*1&type=dailyNearest&startDate=20190101"))) %>%
+  mutate(Date = as.Date(tradingDay)) %>% 
+  select(symbol, Date, close) %>%
+  mutate(symbol = substr(symbol, 1,2))
+
+DATA <- rbind(DATA1, DATA2, DATA3)
+
+
+DATA %>% 
+  ggplot(aes(x = Date, y = close, color = symbol)) + 
+  theme_bw() +
+  theme(plot.title = element_text(size = 20),
+        axis.text.y = element_text(size = 14),
+        axis.text.x = element_text(size = 14),
+        axis.title.y = element_text(size = 14)) +
+  labs(title = "Prices of Nearby Corn, Soybeans, & Wheat Futures",
+       y = "Cents per bushel",
+       x = "") + 
+  
+  geom_line(size = 1)
+```

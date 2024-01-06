@@ -1,0 +1,75 @@
+---
+title: "Acreage and Insurance Decisions"
+---
+
+```{r setup}
+#| include: false
+
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+
+library(tidyverse)
+library(googlesheets4)
+library(tidyr)
+library(kableExtra)
+barchart_key <- Sys.getenv("BARCHART_Key")
+json_key_path <- Sys.getenv("GOOGLE_SHEETS_JSON")
+gs4_auth(path = json_key_path)
+```
+
+In order to meet crop insurance enrollment deadlines you need to make your acreage and insurance decisions by March 15th.
+
+<https://forms.gle/PscmhTrE13roMsw37>
+
+## Acreage Decisions
+
+```{r}
+my_sheet <- read_sheet("1y1Kv8qzbVwlKQoZNc7k4EiYykN7U55ORQll7hOlcA9k") %>%
+  select(1:8, -3)
+
+new_column_names <-  c("Continuous Corn", "Rotational Corn", "Soybean", "Wheat", "Double Crop Soybean")
+colnames(my_sheet)[3:7] <- new_column_names
+
+# Acreage Decisions
+processed_data <- my_sheet %>%
+  mutate(Timestamp = as.Date(Timestamp, format = "%m/%d/%Y")) %>%
+ 
+  filter(Timestamp < as.Date("2024-03-15")) %>%
+  group_by(`Email Address`) %>%  # Assuming Email Address as the unique identifier
+  
+      fill(names(my_sheet)[3:length(my_sheet)], .direction = "down") %>% 
+      slice(n())   
+
+styled_table <- processed_data %>%
+  kable("html", escape = FALSE) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+
+# Print the table (useful for a Quarto or R Markdown document)
+styled_table
+```
+
+## Percent of Acres Insured
+
+```{r}
+my_sheet <- read_sheet("1y1Kv8qzbVwlKQoZNc7k4EiYykN7U55ORQll7hOlcA9k") %>%
+  select(1:2, 23:27,)
+
+new_column_names <-  c("Continuous Corn", "Rotational Corn", "Soybean", "Wheat", "Double Crop Soybean")
+colnames(my_sheet)[3:7] <- new_column_names
+
+# Acreage Decisions
+processed_data <- my_sheet %>%
+  mutate(Timestamp = as.Date(Timestamp, format = "%m/%d/%Y")) %>%
+ 
+  filter(Timestamp < as.Date("2024-03-15")) %>%
+  group_by(`Email Address`) %>%  # Assuming Email Address as the unique identifier
+  
+      fill(names(my_sheet)[3:length(my_sheet)], .direction = "down") %>% 
+      slice(n())   
+
+styled_table <- processed_data %>%
+  kable("html", escape = FALSE) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+
+# Print the table (useful for a Quarto or R Markdown document)
+styled_table
+```

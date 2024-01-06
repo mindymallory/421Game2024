@@ -1,0 +1,29 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "Purdue AGEC 421 Commodity Marketing Game 2024"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: acreage.qmd
+        text: Acreage
+      - href: Prices.qmd
+        text: Prices
+      - href: spot.qmd
+        text: Spot/Forward Sales
+      - href: futures.qmd
+      - text: Futures
+      - href: profit.qmd
+      - text: Profit
+      
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+
+editor: visual
+

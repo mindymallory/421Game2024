@@ -1,0 +1,43 @@
+---
+title: "421 Advanced Commodity Marketing Game 2024"
+---
+
+# Welcome to the Inagural Advanced Commodity Marketing Game!
+
+<https://forms.gle/PscmhTrE13roMsw37>
+
+You farm 1,000 acres of ground you own free and clear with "High Productivity Soil" in Central Indiana. Last year you planted 500 acres to corn and 500 acres to soybeans, and you have 10,000 bushels of corn and 2500 bushels of soybeans from the 2023 crop that is unpriced and in storage.
+
+Your Average Production History (APH) for crop insurance purposes, as well as cost of production are as outlined in the Purdue Extension 2024 Crop Cost and Return Guide.
+
+## Further Assumptions of the Game: 
+
+-   Future Prices follow the actual CBOT futures prices as traded this spring. However, you can only get daily closing prices. E.g., if you submit a sell order on Feb 1 at 10am, you will be short the number of contracts you specified at the closing price for Feb 1.
+
+-   Related, you can only trade once per day. If you submit more than one trade per day, the first trade will be executed and the following will not be executed.
+
+-   The basis that defines the spot price at any given time is assumed to follow the following functional form: Basis = 0.05\*exp(12.60 - F1) - 0.25
+
+-   The only crop insurance policy available to you is Revenue Protection at 80% coverage, for continuous corn, rotational corn, and soybeans. Wheat and double crop beans are not insurable in this game. The per acre premium for the RP policy is as shown in the Cost and Return guide. You can, however, decide how much of your acres to enroll.
+
+-   Price marketing options available to you are to sell spot (only available on your unpriced 2023 bushels), trade futures, or lock in a forward contract. The forward contract price will be determined by the futures contract plus basis as determined by the basis function defined above. For futures or forward trades on 2023 bushels we will use the May 2024 contract for pricing and 2024 crop will use Nov/Dec 2024 contracts. We are making a simplifying assumption here that you have no actual cost to store and experience no opportunity cost of money (no interest charge). Also, you pay no commissions on futures or other trades.
+
+-   On Friday April 12 I will draw from a historical price/yield/prevent plant acreage distribution that I have scaled up to today to determine end of season realizations for the 2024 crop for the purposes of our game. Everyone in the class will be subject to this single draw. We will assume no prevented planting. Any 'open' May futures positions will be closed with the April 11 closing price. Any 'open' Dec/Nov futures positions will be closed with the end of season futures price resulting from the April 12 draw. (You would leave such a position open if your purpose was to hedge the 2024 crop, e.g.)
+
+## This webform serves as your crop insurance agent and your hedge account broker. 
+
+<https://forms.gle/PscmhTrE13roMsw37>
+
+Go there to make crop insurance elections and to make any trades/forward contract decisions. It is ok to enter responses multiple times and leave irrelevant questions blank Once you sell spot or forward contract your 2023 bushels the decision is done, meaning once you sell these bushels the decision is final. Also, you cannot sell more 2023 bushels in the spot or forward market than you have indicated above. There are no restrictions on the size of your futures trades for hedging or speculating purposes. After March 15 acreage decisions are done. If you forget and enter acreage multiple times, your game will be scored based on your last entry through March 15th. However, you can place a futures hedge then lift it later if you want. Or you can speculate and go long or short or only partially hedge. Totally up to you.
+
+## You have to make the following decisions by the times indicated:
+
+1.  Decide when to sell your unsold 2023 corn and soybean bushels. If you never make any sales, you will receive a spot price indicated by the closing price on April 12 for the nearby futures contract plus the basis from the basis function above.
+
+2.  Make acreage plans and crop insurance decisions by March 15. Note: the price for RP crop insurance will be known on March 1.
+
+3.  Make futures trades or forward contracting decisions for the 2024 crop. You can make these trades any time through April 11 at the close of the daytime trading session.
+
+***The student with the highest profit in the class will get a +2% bonus on their final score in the class, and a cool prize!***
+
+Check your progress by visiting this website regularly. It will update once per day.
