@@ -20,7 +20,7 @@ In order to meet crop insurance enrollment deadlines you need to make your acrea
 
 <https://forms.gle/PscmhTrE13roMsw37>
 
-## Acreage Decisions
+## Acreage Decisions  
 
 ```{r}
 my_sheet <- read_sheet("1y1Kv8qzbVwlKQoZNc7k4EiYykN7U55ORQll7hOlcA9k") %>%
