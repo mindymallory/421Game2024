@@ -10,7 +10,7 @@ You farm 1,000 acres of ground you own free and clear with "High Productivity So
 
 Your Average Production History (APH) for crop insurance purposes, as well as cost of production are as outlined in the Purdue Extension 2024 Crop Cost and Return Guide.
 
-## Further Assumptions of the Game: 
+## Further Assumptions of the Game:
 
 -   Future Prices follow the actual CBOT futures prices as traded this spring. However, you can only get daily closing prices. E.g., if you submit a sell order on Feb 1 at 10am, you will be short the number of contracts you specified at the closing price for Feb 1.
 
@@ -24,7 +24,7 @@ Your Average Production History (APH) for crop insurance purposes, as well as co
 
 -   On Friday April 12 I will draw from a historical price/yield/prevent plant acreage distribution that I have scaled up to today to determine end of season realizations for the 2024 crop for the purposes of our game. Everyone in the class will be subject to this single draw. We will assume no prevented planting. Any 'open' May futures positions will be closed with the April 11 closing price. Any 'open' Dec/Nov futures positions will be closed with the end of season futures price resulting from the April 12 draw. (You would leave such a position open if your purpose was to hedge the 2024 crop, e.g.)
 
-## This webform serves as your crop insurance agent and your hedge account broker. 
+## This webform serves as your crop insurance agent and your hedge account broker.
 
 <https://forms.gle/PscmhTrE13roMsw37>
 
