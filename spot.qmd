@@ -21,16 +21,107 @@ gs4_auth(path = json_key_path)
 ```
 
 ```{r}
-my_sheet <- read_sheet("1y1Kv8qzbVwlKQoZNc7k4EiYykN7U55ORQll7hOlcA9k")%>%
+DATA1 <- read.csv(url(paste0("http://ondemand.websol.barchart.com/getHistory.csv?apikey=", barchart_key ,"&symbol=ZC*1&type=dailyNearest&startDate=20190101"))) %>%
+  mutate(Date = as.Date(tradingDay)) %>% 
+  select(symbol, Date, close) %>%
+  mutate(symbol = substr(symbol, 1,2)) 
+
+DATA2 <- read.csv(url(paste0("http://ondemand.websol.barchart.com/getHistory.csv?apikey=", barchart_key ,"&symbol=ZS*1&type=dailyNearest&startDate=20190101"))) %>%
+  mutate(Date = as.Date(tradingDay)) %>% 
+  select(symbol, Date, close) %>%
+  mutate(symbol = substr(symbol, 1,2))
+
+DATA3 <- read.csv(url(paste0("http://ondemand.websol.barchart.com/getHistory.csv?apikey=", barchart_key ,"&symbol=ZW*1&type=dailyNearest&startDate=20190101"))) %>%
+  mutate(Date = as.Date(tradingDay)) %>% 
+  select(symbol, Date, close) %>%
+  mutate(symbol = substr(symbol, 1,2))
+
+DATA <- rbind(DATA1, DATA2, DATA3)
+```
+
+```{r}
+my_sheet <- read_sheet("1y1Kv8qzbVwlKQoZNc7k4EiYykN7U55ORQll7hOlcA9k") %>%
   mutate(`Partial Email` = substr(`Email Address`, 1,4)) %>%
   select(c(-2, -3, 1, 7:29)) %>% 
   select(c(1, 27, 2:26)) %>% 
-  select(c(1,2, 8, 10, 11, 13, 16, 17, 20, 21, 27))
+  select(c(1,2, 8, 10, 11, 13, 16, 17, 20, 21, 27)) %>% 
+  select(c(-9, -11))  #removes 23 wheat forward contract since no 23 bushels, removes (11) sell 23 soybrean spot. think this was an initial question that got replaced by (5) 
 
 
-processed_data <- my_sheet
+processed_data <- my_sheet 
+
+new_column_names <-  c("23 Corn Spot Sales", 
+                       "23 Corn Forward Sales",
+                       "24 Corn Forward Sales",
+                       "23 Soybean Spot Sales", 
+                       "23 Soybean Forward Sales",
+                       "24 Soybean Forward Sales",
+                       "24 Wheat Forward Sales")
+colnames(processed_data)[3:11] <- new_column_names
+
+```
+
+
+```{r}
+processed_data <- processed_data %>%
+  mutate(Date = as.Date(Timestamp))  
+
+processed_data2 <- left_join(processed_data,  
+          DATA %>% pivot_wider(names_from = symbol, values_from = close), 
+          by =  "Date") %>% 
+  group_by(`Partial Email`) %>% 
+  mutate(`23 Corn Forward Sales` = cumsum(`23 Corn Forward Sales`))
+  
+
+```
+
+## Corn Total Spot, Forward Sales, and Average Price
+
+(need to fix the price, currently getting the nearby instead of May and Dec/Nov)
+```{r}
+
+
+processed_data2 %>% 
+  #select(c(1:5)) %>% 
+  group_by(`Partial Email`) %>% 
+  mutate(corn_23spot_value_sold = `23 Corn Forward Sales`*ZC) %>% 
+  mutate(corn_23spot_value_sold = sum(`23 Corn Forward Sales`*ZC/100)) %>% 
+  summarize(`23 Corn Spot Sales` = sum(`23 Corn Spot Sales`, na.rm = TRUE),
+            `23 Corn Forward Sales` = sum(`23 Corn Forward Sales`, na.rm = TRUE),
+            `24 Corn Forward Sales` = sum(`24 Corn Forward Sales`, na.rm = TRUE),
+            `23 Corn Spot Sales Total Value` = sum(corn_23spot_value_sold, na.rm = TRUE)
+            ) %>% 
+  mutate(`23 Corn Spot Ave Price` = `23 Corn Spot Sales Total Value`/`23 Corn Spot Sales`) %>% 
+  select(c(1:2, 6, 3:5)) %>% 
+  kable("html", escape = FALSE) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+```
+
+## Soybean Total Spot, Forward Sales, and Average Price
+
+(coming soon)
+
+```{r}
+# 
+# `23 Soybean Spot Sales` = sum(`23 Soybean Spot Sales`, na.rm = TRUE),
+#             `23 Soybean Forward Sales` = sum(`23 Soybean Forward Sales`, na.rm = TRUE),
+#             `24 Soybean Forward Sales` = sum(`24 Soybean Forward Sales`, na.rm = TRUE),
+#             `24 Wheat Forward Sales` = sum(`24 Wheat Forward Sales`, na.rm = TRUE)
+```
+
+## Wheat Total Forward Sales, and Average Price
+
+(coming soon)
+
+## Indivdual Spot and Forward Sales
+
+```{r}
+
 
 styled_table <- processed_data %>%
+  group_by(`Partial Email`) %>% 
+  arrange(`Partial Email`) %>% 
+  select(c(-10)) %>% 
   kable("html", escape = FALSE) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
 
