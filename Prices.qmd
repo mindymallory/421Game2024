@@ -4,10 +4,16 @@ title: "Prices"
 
 ```{r setup}
 #| include: false
+
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 
 library(tidyverse)
+library(googlesheets4)
+library(tidyr)
+library(kableExtra)
 barchart_key <- Sys.getenv("BARCHART_Key")
+json_key_path <- Sys.getenv("GOOGLE_SHEETS_JSON")
+gs4_auth(path = json_key_path)
 ```
 
 <https://forms.gle/PscmhTrE13roMsw37>

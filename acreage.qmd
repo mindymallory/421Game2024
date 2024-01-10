@@ -24,7 +24,9 @@ In order to meet crop insurance enrollment deadlines you need to make your acrea
 
 ```{r}
 my_sheet <- read_sheet("1y1Kv8qzbVwlKQoZNc7k4EiYykN7U55ORQll7hOlcA9k") %>%
-  select(1:8, -3)
+  mutate(`Partial Email` = substr(`Email Address`, 1,4)) %>% 
+  select(1:8, 29, -3) %>% 
+  select(1, 8, 3:8)
 
 new_column_names <-  c("Continuous Corn", "Rotational Corn", "Soybean", "Wheat", "Double Crop Soybean")
 colnames(my_sheet)[3:7] <- new_column_names
@@ -32,9 +34,9 @@ colnames(my_sheet)[3:7] <- new_column_names
 # Acreage Decisions
 processed_data <- my_sheet %>%
   mutate(Timestamp = as.Date(Timestamp, format = "%m/%d/%Y")) %>%
- 
+  
   filter(Timestamp < as.Date("2024-03-15")) %>%
-  group_by(`Email Address`) %>%  # Assuming Email Address as the unique identifier
+  group_by(`Partial Email`) %>%  # Assuming Email Address as the unique identifier
   
       fill(names(my_sheet)[3:length(my_sheet)], .direction = "down") %>% 
       slice(n())   
@@ -50,8 +52,9 @@ styled_table
 ## Percent of Acres Insured
 
 ```{r}
-my_sheet <- read_sheet("1y1Kv8qzbVwlKQoZNc7k4EiYykN7U55ORQll7hOlcA9k") %>%
-  select(1:2, 23:27,)
+my_sheet <- read_sheet("1y1Kv8qzbVwlKQoZNc7k4EiYykN7U55ORQll7hOlcA9k")   %>%
+  mutate(`Partial Email` = substr(`Email Address`, 1,4)) %>% 
+  select(1, 29, 23:27, -3) 
 
 new_column_names <-  c("Continuous Corn", "Rotational Corn", "Soybean", "Wheat", "Double Crop Soybean")
 colnames(my_sheet)[3:7] <- new_column_names
@@ -61,7 +64,7 @@ processed_data <- my_sheet %>%
   mutate(Timestamp = as.Date(Timestamp, format = "%m/%d/%Y")) %>%
  
   filter(Timestamp < as.Date("2024-03-15")) %>%
-  group_by(`Email Address`) %>%  # Assuming Email Address as the unique identifier
+  group_by(`Partial Email`) %>%  # Assuming Email Address as the unique identifier
   
       fill(names(my_sheet)[3:length(my_sheet)], .direction = "down") %>% 
       slice(n())   
