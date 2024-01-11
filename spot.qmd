@@ -21,22 +21,50 @@ gs4_auth(path = json_key_path)
 ```
 
 ```{r}
-DATA1 <- read.csv(url(paste0("http://ondemand.websol.barchart.com/getHistory.csv?apikey=", barchart_key ,"&symbol=ZC*1&type=dailyNearest&startDate=20190101"))) %>%
+DATA1 <- read.csv(url(paste0("http://ondemand.websol.barchart.com/getHistory.csv?apikey=", barchart_key ,"&symbol=ZCK24&type=daily&startDate=20190101"))) %>%
   mutate(Date = as.Date(tradingDay)) %>% 
   select(symbol, Date, close) %>%
   mutate(symbol = substr(symbol, 1,2)) 
 
-DATA2 <- read.csv(url(paste0("http://ondemand.websol.barchart.com/getHistory.csv?apikey=", barchart_key ,"&symbol=ZS*1&type=dailyNearest&startDate=20190101"))) %>%
+DATA2 <- read.csv(url(paste0("http://ondemand.websol.barchart.com/getHistory.csv?apikey=", barchart_key ,"&symbol=ZSK24&type=daily&startDate=20190101"))) %>%
   mutate(Date = as.Date(tradingDay)) %>% 
   select(symbol, Date, close) %>%
   mutate(symbol = substr(symbol, 1,2))
 
-DATA3 <- read.csv(url(paste0("http://ondemand.websol.barchart.com/getHistory.csv?apikey=", barchart_key ,"&symbol=ZW*1&type=dailyNearest&startDate=20190101"))) %>%
+DATA3 <- read.csv(url(paste0("http://ondemand.websol.barchart.com/getHistory.csv?apikey=", barchart_key ,"&symbol=ZWK24&type=daily&startDate=20190101"))) %>%
   mutate(Date = as.Date(tradingDay)) %>% 
   select(symbol, Date, close) %>%
   mutate(symbol = substr(symbol, 1,2))
 
 DATA <- rbind(DATA1, DATA2, DATA3)
+
+DATAK <- DATA %>% mutate (closeSpot = case_when(symbol == "ZC" ~ close + (.05*exp(close/100 - 450/100) - 25/100)*100,
+                                       symbol == "ZS" ~ close + (.05*exp(close/100 - 1260/100) - 50/100)*100,
+                                       symbol == "ZW" ~ close + (.05*exp(close/100 - 600/100) - 25/100)*100))
+
+###########
+# New Crop
+DATA1 <- read.csv(url(paste0("http://ondemand.websol.barchart.com/getHistory.csv?apikey=", barchart_key ,"&symbol=ZCZ24&type=daily&startDate=20190101"))) %>%
+  mutate(Date = as.Date(tradingDay)) %>% 
+  select(symbol, Date, close) %>%
+  mutate(symbol = substr(symbol, 1,2)) 
+
+DATA2 <- read.csv(url(paste0("http://ondemand.websol.barchart.com/getHistory.csv?apikey=", barchart_key ,"&symbol=ZSX24&type=daily&startDate=20190101"))) %>%
+  mutate(Date = as.Date(tradingDay)) %>% 
+  select(symbol, Date, close) %>%
+  mutate(symbol = substr(symbol, 1,2))
+
+DATA3 <- read.csv(url(paste0("http://ondemand.websol.barchart.com/getHistory.csv?apikey=", barchart_key ,"&symbol=ZWK24&type=daily&startDate=20190101"))) %>%
+  mutate(Date = as.Date(tradingDay)) %>% 
+  select(symbol, Date, close) %>%
+  mutate(symbol = substr(symbol, 1,2))
+
+DATA <- rbind(DATA1, DATA2, DATA3)
+
+DATANew <- DATA %>% mutate (closeSpot = case_when(symbol == "ZC" ~ close + (.05*exp(close/100 - 450/100) - 25/100)*100,
+                                       symbol == "ZS" ~ close + (.05*exp(close/100 - 1260/100) - 50/100)*100,
+                                       symbol == "ZW" ~ close + (.05*exp(close/100 - 600/100) - 25/100)*100))
+
 ```
 
 ```{r}
@@ -63,55 +91,196 @@ colnames(processed_data)[3:11] <- new_column_names
 
 
 ```{r}
+
+
 processed_data <- processed_data %>%
   mutate(Date = as.Date(Timestamp))  
 
 processed_data2 <- left_join(processed_data,  
-          DATA %>% pivot_wider(names_from = symbol, values_from = close), 
+          DATAK %>% select(-close) %>% pivot_wider(names_from = symbol, values_from = closeSpot), 
+          #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
+          #     tibble(Date = as.Date("2024-01-11"), ZC = 461.00, ZS = 1230, ZW = 612)), #For testing only DELETE and uncomment line above!
           by =  "Date") %>% 
-  group_by(`Partial Email`) %>% 
-  mutate(`23 Corn Forward Sales` = cumsum(`23 Corn Forward Sales`))
+  left_join(DATANew %>% select(-close) %>% pivot_wider(names_from = symbol, values_from = closeSpot), 
+          #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
+          #     tibble(Date = as.Date("2024-01-11"), ZC = 461.00, ZS = 1230, ZW = 612)), #For testing only DELETE and uncomment line above!
+          by =  "Date") %>% 
+  group_by(`Partial Email`) 
   
 
 ```
 
+## Take Note!
+
+If your row is highlighted in red, it means you tried to sell more 2023 bushels than you have stored, so your later sales that put you over 2023 bushels will be deleted soon. 
+
+
+
 ## Corn Total Spot, Forward Sales, and Average Price
 
-(need to fix the price, currently getting the nearby instead of May and Dec/Nov)
+
+
+
 ```{r}
 
-
-processed_data2 %>% 
+df <- processed_data2 %>% 
   #select(c(1:5)) %>% 
   group_by(`Partial Email`) %>% 
-  mutate(corn_23spot_value_sold = `23 Corn Forward Sales`*ZC) %>% 
-  mutate(corn_23spot_value_sold = sum(`23 Corn Forward Sales`*ZC/100)) %>% 
-  summarize(`23 Corn Spot Sales` = sum(`23 Corn Spot Sales`, na.rm = TRUE),
-            `23 Corn Forward Sales` = sum(`23 Corn Forward Sales`, na.rm = TRUE),
-            `24 Corn Forward Sales` = sum(`24 Corn Forward Sales`, na.rm = TRUE),
-            `23 Corn Spot Sales Total Value` = sum(corn_23spot_value_sold, na.rm = TRUE)
+  arrange(`Partial Email`) %>% 
+  
+  # Replace NA's with 0 so we can do cumsum
+  mutate(`23 Corn Spot Sales` = case_when(is.na(`23 Corn Spot Sales`) == TRUE ~ 0,
+                                            is.na(`23 Corn Spot Sales`) == FALSE ~ `23 Corn Spot Sales`)) %>% 
+  mutate(`23 Corn Forward Sales` = case_when(is.na(`23 Corn Forward Sales`) == TRUE ~ 0,
+                                            is.na(`23 Corn Forward Sales`) == FALSE ~ `23 Corn Forward Sales`)) %>% 
+  mutate(`24 Corn Forward Sales` = case_when(is.na(`24 Corn Forward Sales`) == TRUE ~ 0,
+                                            is.na(`24 Corn Forward Sales`) == FALSE ~ `24 Corn Forward Sales`)) %>% 
+  
+  # Cumsum spot sales
+  mutate(`23 Corn Spot Sales Cumul` = cumsum(`23 Corn Spot Sales`)) %>% 
+  mutate(`23 Corn Forward Sales Cumul` = cumsum(`23 Corn Forward Sales`)) %>% 
+  mutate(`24 Corn Forward Sales Cumul` = cumsum(`24 Corn Forward Sales`)) %>% 
+
+    # This step computes value sold for each individual sale. There is no check on selling more than 10000, so will have to valiadate less than 10000 and delete from sheet at later date if students go over. If make this into real game, app would validate the input so not an issue we need to think hard about on the back end. 
+  mutate(corn_23spot_value_sold = `23 Corn Spot Sales`*ZC.x/100) %>% 
+  mutate(corn_23forward_value_sold = `23 Corn Forward Sales`*ZC.x/100) %>%
+  mutate(corn_24forward_value_sold = `24 Corn Forward Sales`*ZC.y/100) %>%
+ 
+
+    
+  mutate(corn_23spot_value_sold = cumsum(corn_23spot_value_sold) ) %>%
+  mutate(corn_23forward_value_sold = cumsum(corn_23forward_value_sold) ) %>%
+  mutate(corn_24forward_value_sold = cumsum(corn_24forward_value_sold) ) %>%
+  summarize(`23 Corn Spot Sales` = sum(`23 Corn Spot Sales`, na.rm = TRUE) %>% round(0),
+            `23 Corn Forward Sales` = sum(`23 Corn Forward Sales`, na.rm = TRUE) %>% round(0),
+            `24 Corn Forward Sales` = sum(`24 Corn Forward Sales`, na.rm = TRUE) %>% round(0),
+            `23 Corn Spot Sales Total Value` = last(corn_23spot_value_sold),
+            `23 Corn Forward Sales Total Value` = last(corn_23forward_value_sold),
+            `24 Corn Forward Sales Total Value` = last(corn_24forward_value_sold)
             ) %>% 
-  mutate(`23 Corn Spot Ave Price` = `23 Corn Spot Sales Total Value`/`23 Corn Spot Sales`) %>% 
-  select(c(1:2, 6, 3:5)) %>% 
+  mutate(`23 Corn Spot Ave Price` = round(`23 Corn Spot Sales Total Value`/`23 Corn Spot Sales`, 2)) %>% 
+  mutate(`23 Corn Forward Ave Price` = round(`23 Corn Forward Sales Total Value`/`23 Corn Forward Sales`, 2) ) %>% 
+  mutate(`24 Corn Forward Ave Price` = round(`24 Corn Forward Sales Total Value`/`24 Corn Forward Sales`, 2) ) %>% 
+  select(c(1:2, 8, 3, 9, 4, 10)) 
+
+kable_df <- df %>% 
   kable("html", escape = FALSE) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+
+# Apply conditional formatting
+for(i in 1:nrow(df)){
+  if(df$`23 Corn Spot Sales`[i] + df$`23 Corn Forward Sales`[i] > 10000 | 
+     df$`24 Corn Forward Sales`[i] > 166000 ){
+    kable_df <- kable_df %>%
+      row_spec(i, background = "red") 
+  }
+}
+kable_df
 ```
 
 ## Soybean Total Spot, Forward Sales, and Average Price
 
-(coming soon)
+
 
 ```{r}
-# 
-# `23 Soybean Spot Sales` = sum(`23 Soybean Spot Sales`, na.rm = TRUE),
-#             `23 Soybean Forward Sales` = sum(`23 Soybean Forward Sales`, na.rm = TRUE),
-#             `24 Soybean Forward Sales` = sum(`24 Soybean Forward Sales`, na.rm = TRUE),
-#             `24 Wheat Forward Sales` = sum(`24 Wheat Forward Sales`, na.rm = TRUE)
+df <- processed_data2 %>% 
+  #select(c(1:5)) %>% 
+  group_by(`Partial Email`) %>% 
+  arrange(`Partial Email`) %>% 
+  
+  # Replace NA's with 0 so we can do cumsum
+  mutate(`23 Soybean Spot Sales` = case_when(is.na(`23 Soybean Spot Sales`) == TRUE ~ 0,
+                                            is.na(`23 Soybean Spot Sales`) == FALSE ~ `23 Soybean Spot Sales`)) %>% 
+  mutate(`23 Soybean Forward Sales` = case_when(is.na(`23 Soybean Forward Sales`) == TRUE ~ 0,
+                                            is.na(`23 Soybean Forward Sales`) == FALSE ~ `23 Soybean Forward Sales`)) %>% 
+  mutate(`24 Soybean Forward Sales` = case_when(is.na(`24 Soybean Forward Sales`) == TRUE ~ 0,
+                                            is.na(`24 Soybean Forward Sales`) == FALSE ~ `24 Soybean Forward Sales`)) %>% 
+  
+  # Cumsum spot sales
+  mutate(`23 Soybean Spot Sales Cumul` = cumsum(`23 Soybean Spot Sales`)) %>% 
+  mutate(`23 Soybean Forward Sales Cumul` = cumsum(`23 Soybean Forward Sales`)) %>% 
+  mutate(`24 Soybean Forward Sales Cumul` = cumsum(`24 Soybean Forward Sales`)) %>% 
+
+    # This step computes value sold for each individual sale. There is no check on selling more than 10000, so will have to valiadate less than 10000 and delete from sheet at later date if students go over. If make this into real game, app would validate the input so not an issue we need to think hard about on the back end. 
+  mutate(Soybean_23spot_value_sold = `23 Soybean Spot Sales`*ZS.x/100) %>% 
+  mutate(Soybean_23forward_value_sold = `23 Soybean Forward Sales`*ZS.x/100) %>%
+  mutate(Soybean_24forward_value_sold = `24 Soybean Forward Sales`*ZS.y/100) %>%
+ 
+
+    
+  mutate(Soybean_23spot_value_sold = cumsum(Soybean_23spot_value_sold) ) %>%
+  mutate(Soybean_23forward_value_sold = cumsum(Soybean_23forward_value_sold) ) %>%
+  mutate(Soybean_24forward_value_sold = cumsum(Soybean_24forward_value_sold) ) %>%
+  summarize(`23 Soybean Spot Sales` = sum(`23 Soybean Spot Sales`, na.rm = TRUE) %>% round(0),
+            `23 Soybean Forward Sales` = sum(`23 Soybean Forward Sales`, na.rm = TRUE) %>% round(0),
+            `24 Soybean Forward Sales` = sum(`24 Soybean Forward Sales`, na.rm = TRUE) %>% round(0),
+            `23 Soybean Spot Sales Total Value` = last(Soybean_23spot_value_sold),
+            `23 Soybean Forward Sales Total Value` = last(Soybean_23forward_value_sold),
+            `24 Soybean Forward Sales Total Value` = last(Soybean_24forward_value_sold)
+            ) %>% 
+  mutate(`23 Soybean Spot Ave Price` = round(`23 Soybean Spot Sales Total Value`/`23 Soybean Spot Sales`, 2)) %>% 
+  mutate(`23 Soybean Forward Ave Price` = round(`23 Soybean Forward Sales Total Value`/`23 Soybean Forward Sales`, 2) ) %>% 
+  mutate(`24 Soybean Forward Ave Price` = round(`24 Soybean Forward Sales Total Value`/`24 Soybean Forward Sales`, 2) ) %>% 
+  select(c(1:2, 8, 3, 9, 4, 10)) 
+
+kable_df <- df %>% 
+  kable("html", escape = FALSE) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+
+# Apply conditional formatting
+for(i in 1:nrow(df)){
+  if(df$`23 Soybean Spot Sales`[i] + df$`23 Soybean Forward Sales`[i] > 2500 | 
+     df$`24 Soybean Forward Sales`[i] > 53000 ){
+    kable_df <- kable_df %>%
+      row_spec(i, background = "red") 
+  }
+}
+kable_df
 ```
 
 ## Wheat Total Forward Sales, and Average Price
 
-(coming soon)
+```{r}
+
+df <- processed_data2 %>% 
+  #select(c(1:5)) %>% 
+  group_by(`Partial Email`) %>% 
+  arrange(`Partial Email`) %>% 
+  
+  # Replace NA's with 0 so we can do cumsum
+  mutate(`24 Wheat Forward Sales` = case_when(is.na(`24 Wheat Forward Sales`) == TRUE ~ 0,
+                                            is.na(`24 Wheat Forward Sales`) == FALSE ~ `24 Wheat Forward Sales`)) %>% 
+  
+  # Cumsum spot sales
+  mutate(`24 Wheat Forward Sales Cumul` = cumsum(`24 Wheat Forward Sales`)) %>% 
+
+    # This step computes value sold for each individual sale. There is no check on selling more than 10000, so will have to valiadate less than 10000 and delete from sheet at later date if students go over. If make this into real game, app would validate the input so not an issue we need to think hard about on the back end. 
+  mutate(Wheat_24forward_value_sold = `24 Wheat Forward Sales`*ZW.y/100) %>%
+ 
+
+    
+  mutate(Wheat_24forward_value_sold = cumsum(Wheat_24forward_value_sold) ) %>%
+  summarize(
+            `24 Wheat Forward Sales` = sum(`24 Wheat Forward Sales`, na.rm = TRUE) %>% round(0),
+            `24 Wheat Forward Sales Total Value` = last(Wheat_24forward_value_sold)
+            ) %>% 
+  mutate(`24 Wheat Forward Ave Price` = round(`24 Wheat Forward Sales Total Value`/`24 Wheat Forward Sales`, 2) ) %>% 
+  select(c(1:2, 4)) 
+
+kable_df <- df %>% 
+  kable("html", escape = FALSE) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+
+# Apply conditional formatting
+for(i in 1:nrow(df)){
+  if( df$`24 Wheat Forward Sales`[i] > 93000 ){
+    kable_df <- kable_df %>%
+      row_spec(i, background = "red") 
+  }
+}
+kable_df
+```
+
 
 ## Indivdual Spot and Forward Sales
 
