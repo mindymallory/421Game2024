@@ -2,6 +2,306 @@
 title: "Futures Trades"
 ---
 
-Futures trades will appear here shortly.
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
 
+```{=html}
+<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+```
+```{=html}
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+```
 <https://forms.gle/PscmhTrE13roMsw37>
+
+## Top
+
+**There is an error in the 'running PNL' I am working on.**
+
+```{r setup}
+#| include: false
+
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+
+library(tidyverse)
+library(googlesheets4)
+library(tidyr)
+library(kableExtra)
+library(hms)
+barchart_key <- Sys.getenv("BARCHART_Key")
+json_key_path <- Sys.getenv("GOOGLE_SHEETS_JSON")
+gs4_auth(path = json_key_path)
+```
+
+```{r}
+my_sheet <- read_sheet("1y1Kv8qzbVwlKQoZNc7k4EiYykN7U55ORQll7hOlcA9k") %>%
+  mutate(`Partial Email` = substr(`Email Address`, 1,4)) %>% 
+  select(c(1, 29, 10, 13, 15, 16, 19, 20 ))
+
+new_column_names <-  c("K Corn", "Z Corn", "K Soybean", "X Soybean", "K Wheat", "Z Wheat")
+colnames(my_sheet)[3:8] <- new_column_names
+
+# If trade before the close you get same day close price. If after the close, you get next day close price. 
+my_sheet <- my_sheet %>%
+  rowwise() %>%
+  mutate(
+    Date = if_else(
+      hour(Timestamp) < 13 || (hour(Timestamp) == 13 && minute(Timestamp) < 20),
+      as.Date(Timestamp),
+      as.Date(Timestamp) + days(1)
+    )
+  )
+
+my_sheet <- my_sheet %>% select(c(1,2, 9, 3:8))
+
+```
+
+```{r}
+
+DATA1 <- read.csv(url(paste0("http://ondemand.websol.barchart.com/getHistory.csv?apikey=", barchart_key ,"&symbol=ZCK24&type=daily&startDate=20190101"))) %>%
+  mutate(Date = as.Date(tradingDay)) %>% 
+  select(symbol, Date, close) %>%
+  mutate(symbol = substr(symbol, 1,2)) 
+
+DATA2 <- read.csv(url(paste0("http://ondemand.websol.barchart.com/getHistory.csv?apikey=", barchart_key ,"&symbol=ZSK24&type=daily&startDate=20190101"))) %>%
+  mutate(Date = as.Date(tradingDay)) %>% 
+  select(symbol, Date, close) %>%
+  mutate(symbol = substr(symbol, 1,2))
+
+DATA3 <- read.csv(url(paste0("http://ondemand.websol.barchart.com/getHistory.csv?apikey=", barchart_key ,"&symbol=ZWK24&type=daily&startDate=20190101"))) %>%
+  mutate(Date = as.Date(tradingDay)) %>% 
+  select(symbol, Date, close) %>%
+  mutate(symbol = substr(symbol, 1,2))
+
+DATA <- rbind(DATA1, DATA2, DATA3)
+
+DATAK <- DATA %>% mutate (closeSpot = case_when(symbol == "ZC" ~ close + (.05*exp(close/100 - 450/100) - 25/100)*100,
+                                       symbol == "ZS" ~ close + (.05*exp(close/100 - 1260/100) - 50/100)*100,
+                                       symbol == "ZW" ~ close + (.05*exp(close/100 - 600/100) - 25/100)*100))
+
+todayPricesK <- DATAK %>% select(-close) %>% pivot_wider(names_from = symbol, values_from = closeSpot) %>% arrange(Date) %>% last()
+###########
+# New Crop
+DATA1 <- read.csv(url(paste0("http://ondemand.websol.barchart.com/getHistory.csv?apikey=", barchart_key ,"&symbol=ZCZ24&type=daily&startDate=20190101"))) %>%
+  mutate(Date = as.Date(tradingDay)) %>% 
+  select(symbol, Date, close) %>%
+  mutate(symbol = substr(symbol, 1,2)) 
+
+DATA2 <- read.csv(url(paste0("http://ondemand.websol.barchart.com/getHistory.csv?apikey=", barchart_key ,"&symbol=ZSX24&type=daily&startDate=20190101"))) %>%
+  mutate(Date = as.Date(tradingDay)) %>% 
+  select(symbol, Date, close) %>%
+  mutate(symbol = substr(symbol, 1,2))
+
+DATA3 <- read.csv(url(paste0("http://ondemand.websol.barchart.com/getHistory.csv?apikey=", barchart_key ,"&symbol=ZWK24&type=daily&startDate=20190101"))) %>%
+  mutate(Date = as.Date(tradingDay)) %>% 
+  select(symbol, Date, close) %>%
+  mutate(symbol = substr(symbol, 1,2))
+
+DATA <- rbind(DATA1, DATA2, DATA3)
+
+DATANew <- DATA %>% mutate (closeSpot = case_when(symbol == "ZC" ~ close + (.05*exp(close/100 - 450/100) - 25/100)*100,
+                                       symbol == "ZS" ~ close + (.05*exp(close/100 - 1260/100) - 50/100)*100,
+                                       symbol == "ZW" ~ close + (.05*exp(close/100 - 600/100) - 25/100)*100))
+todayPricesNew <- DATANew %>% select(-close) %>% pivot_wider(names_from = symbol, values_from = closeSpot) %>% arrange(Date) %>% last()
+
+```
+
+```{r}
+#March cprn Calculations
+tableZCK <- left_join(my_sheet,  
+          DATAK %>% select(-close) %>% pivot_wider(names_from = symbol, values_from = closeSpot), 
+          #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
+          #     tibble(Date = as.Date("2024-01-11"), ZC = 461.00, ZS = 1230, ZW = 612)), #For testing only DELETE and uncomment line above!
+          by =  "Date") %>% 
+  left_join(DATANew %>% select(-close) %>% pivot_wider(names_from = symbol, values_from = closeSpot), 
+          #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
+          #     tibble(Date = as.Date("2024-01-11"), ZC = 461.00, ZS = 1230, ZW = 612)), #For testing only DELETE and uncomment line above!
+          by =  "Date") %>%
+  group_by(`Partial Email`) %>%
+  arrange(`Partial Email`) %>% 
+  mutate(TradeDate = Date) %>%
+  mutate_if(is.numeric, ~ifelse(is.na(.), 0, .)) %>% # replace na's with zeros becasue it kills cumsum
+  mutate(`Corn K Running Positions` = round(cumsum(`K Corn`), 0),
+         k_corn_notional = `K Corn`*ZC.x,
+         k_corn_runningPNL = cumsum(k_corn_notional),
+         `K Corn Trade Price` = round(ZC.x, 2),
+         k_corn_lastPrice = round(todayPricesK$ZC, 2), 
+         `K Corn` = round(`K Corn`, 0),
+         `Corn K Running Positions` = round(`Corn K Running Positions`, 0)) %>%
+ # mutate(k_corn_notional = case_when(`Corn K Running Positions` == 0 ~ k_corn_notional,
+ #                                      `Corn K Running Positions` != 0 ~ k_corn_notional + `K Corn`* k_corn_lastPrice )) %>% 
+  mutate(k_corn_runningPNL = round(case_when(k_corn_runningPNL != 0 ~ (-1)*k_corn_runningPNL/100 + `K Corn`*k_corn_lastPrice/100,
+                                       TRUE ~ 0), 2 ))  %>%
+  select(c(16, 2, 4, 17,  19, 20, 21)) 
+
+
+new_column_names <-  c("K Corn Trades", "K Corn Running Positions", "K Corn Running PNL", "K Corn Trade Price", "K Corn Last Price")
+colnames(tableZCK)[3:7] <- new_column_names
+```
+
+```{r}
+# Dec corn Calculations
+tableZCZ <- left_join(my_sheet,  
+          DATAK %>% select(-close) %>% pivot_wider(names_from = symbol, values_from = closeSpot), 
+          #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
+          #     tibble(Date = as.Date("2024-01-11"), ZC = 461.00, ZS = 1230, ZW = 612)), #For testing only DELETE and uncomment line above!
+          by =  "Date") %>% 
+  left_join(DATANew %>% select(-close) %>% pivot_wider(names_from = symbol, values_from = closeSpot), 
+          #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
+          #     tibble(Date = as.Date("2024-01-11"), ZC = 461.00, ZS = 1230, ZW = 612)), #For testing only DELETE and uncomment line above!
+          by =  "Date") %>%
+  group_by(`Partial Email`) %>%
+  arrange(`Partial Email`) %>% 
+  mutate(TradeDate = Date) %>%
+  mutate_if(is.numeric, ~ifelse(is.na(.), 0, .)) %>% # replace na's with zeros becasue it kills cumsum
+  mutate(`Corn Z Running Positions` = round(cumsum(`Z Corn`), 0),
+         z_corn_notional = `Z Corn`*ZC.y,
+         z_corn_runningPNL = cumsum(z_corn_notional),
+         `Z Corn Trade Price` = round(ZC.y, 2),
+         z_corn_lastPrice = round(todayPricesNew$ZC, 2), 
+         `Z Corn` = round(`Z Corn`, 0),
+         `Corn Z Running Positions` = round(`Corn Z Running Positions`, 0)) %>%
+ # mutate(k_corn_notional = case_when(`Corn K Running Positions` == 0 ~ k_corn_notional,
+ #                                      `Corn K Running Positions` != 0 ~ k_corn_notional + `K Corn`* k_corn_lastPrice )) %>% 
+  mutate(z_corn_runningPNL = round(case_when(z_corn_runningPNL != 0 ~ (-1)*z_corn_runningPNL/100 + `Z Corn`*z_corn_lastPrice/100,
+                                       TRUE ~ 0), 2 ))  %>%
+  select(c(16, 2, 5, 17,  19, 20, 21)) 
+
+
+new_column_names <-  c("Z Corn Trades", "Z Corn Running Positions", "Z Corn Running PNL", "Z Corn Trade Price", "Z Corn Last Price")
+colnames(tableZCZ)[3:7] <- new_column_names
+```
+
+```{r}
+#March soybean Calculations
+tableZSK <- left_join(my_sheet,  
+          DATAK %>% select(-close) %>% pivot_wider(names_from = symbol, values_from = closeSpot), 
+          #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
+          #     tibble(Date = as.Date("2024-01-11"), ZC = 461.00, ZS = 1230, ZW = 612)), #For testing only DELETE and uncomment line above!
+          by =  "Date") %>% 
+  left_join(DATANew %>% select(-close) %>% pivot_wider(names_from = symbol, values_from = closeSpot), 
+          #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
+          #     tibble(Date = as.Date("2024-01-11"), ZC = 461.00, ZS = 1230, ZW = 612)), #For testing only DELETE and uncomment line above!
+          by =  "Date") %>%
+  group_by(`Partial Email`) %>%
+  arrange(`Partial Email`) %>% 
+  mutate(TradeDate = Date) %>%
+  mutate_if(is.numeric, ~ifelse(is.na(.), 0, .)) %>% # replace na's with zeros becasue it kills cumsum
+  mutate(`Soybean K Running Positions` = round(cumsum(`K Soybean`), 0),
+         k_soybean_notional = `K Soybean`*ZS.x,
+         k_soybean_runningPNL = cumsum(k_soybean_notional),
+         `K Soybean Trade Price` = round(ZS.x,2),
+         k_soybean_lastPrice = round(todayPricesK$ZS, 2), 
+         `K Soybean` = round(`K Soybean`, 0),
+         `Soybean K Running Positions` = round(`Soybean K Running Positions`, 0)) %>%
+  mutate(k_soybean_runningPNL = round(case_when(k_soybean_runningPNL != 0 ~ (-1)*k_soybean_runningPNL/100 + `K Soybean`*k_soybean_lastPrice/100,
+                                       TRUE ~ 0), 2 ))  %>%
+  select(c(16, 2, 6, 17,  19, 20, 21)) 
+
+
+new_column_names <-  c("K Soybean Trades", "K Soybean Running Positions", "K Soybean Running PNL", "K Soybean Trade Price", "K Soybean Last Price")
+colnames(tableZSK)[3:7] <- new_column_names
+```
+
+## March Corn Trades, Profit and Loss
+
+```{r}
+tableZCK %>% 
+ knitr::kable("html", table.attr = "id='myTableZCK'") 
+```
+
+```{=html}
+<script>
+  $(document).ready( function () {
+      $('#myTableZCK').DataTable();
+  });
+  </script>
+```
+## Dec Corn Trades Profit and Loss
+
+```{r}
+
+tableZCZ %>% 
+ knitr::kable("html", table.attr = "id='myTableZCZ'") 
+```
+
+```{=html}
+<script>
+  $(document).ready( function () {
+      $('#myTableZCZ').DataTable();
+  });
+  </script>
+```
+## March Soybean Trades Profit and Loss
+
+```{r}
+
+tableZSK %>% 
+ knitr::kable("html", table.attr = "id='myTableZSK'") 
+```
+
+```{=html}
+<script>
+  $(document).ready( function () {
+      $('#myTableZSK').DataTable();
+  });
+  </script>
+```
+```{r}
+# Trades Data Structure
+# Columns: TradeID, TradeDate, Partial Email, Instrument, Quantity, Price
+trades <- data.frame(
+  TradeID = character(),
+  TradeDate = as.Date(character()),
+  `Partial Email` = character(),
+  Instrument = character(),
+  Quantity = numeric(),
+  Price = numeric(),
+  stringsAsFactors = FALSE,
+  check.names = FALSE
+)
+
+# Positions Data Structure
+# Columns: Partial Email, Instrument, Quantity, AvgPrice
+positions <- data.frame(
+  `Partial Email` = 'MMMM',
+  Instrument = "C Corn",
+  Quantity = 1000,
+  AvgPrice = 500,
+  stringsAsFactors = FALSE,
+  check.names = FALSE
+)
+
+# Function to process new trades and update positions
+update_positions <- function(new_trades, existing_positions) {
+  # Combine new trades with existing trades
+  all_trades <- bind_rows(trades, new_trades)
+
+  # Update positions
+  updated_positions <- all_trades %>%
+    group_by(`Partial Email`, Instrument) %>%
+    summarise(
+      Quantity = sum(Quantity),
+      AvgPrice = sum(Quantity * Price) / sum(Quantity),
+      .groups = 'drop'
+    ) %>%
+    filter(Quantity != 0)  # Removing closed positions
+
+  return(list(trades = all_trades, positions = updated_positions))
+}
+```
+
+```{r}
+# Example: Adding a new trade
+new_trade <- data.frame(
+  TradeID = "T002",
+  TradeDate = as.Date("2024-01-10"),
+  `Partial Email` = "email@example.com",
+  Instrument = "K Corn",
+  Quantity = -100,
+  Price = 552.6993
+)
+
+# Update positions with new trade
+result <- update_positions(new_trade, positions)
+trades <- result$trades
+positions <- result$positions
+```
