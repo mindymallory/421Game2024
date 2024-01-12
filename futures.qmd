@@ -14,7 +14,6 @@ title: "Futures Trades"
 
 ## Top
 
-**There is an error in the 'running PNL' I am working on.**
 
 ```{r setup}
 #| include: false
@@ -105,7 +104,7 @@ todayPricesNew <- DATANew %>% select(-close) %>% pivot_wider(names_from = symbol
 ```
 
 ```{r}
-#March cprn Calculations
+#March corn Calculations
 tableZCK <- left_join(my_sheet,  
           DATAK %>% select(-close) %>% pivot_wider(names_from = symbol, values_from = closeSpot), 
           #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
@@ -125,10 +124,11 @@ tableZCK <- left_join(my_sheet,
          `K Corn Trade Price` = round(ZC.x, 2),
          k_corn_lastPrice = round(todayPricesK$ZC, 2), 
          `K Corn` = round(`K Corn`, 0),
-         `Corn K Running Positions` = round(`Corn K Running Positions`, 0)) %>%
+         `Corn K Running Positions` = round(`Corn K Running Positions`, 0),
+         cumsumnotional = cumsum(k_corn_notional)) %>%
  # mutate(k_corn_notional = case_when(`Corn K Running Positions` == 0 ~ k_corn_notional,
  #                                      `Corn K Running Positions` != 0 ~ k_corn_notional + `K Corn`* k_corn_lastPrice )) %>% 
-  mutate(k_corn_runningPNL = round(case_when(k_corn_runningPNL != 0 ~ (-1)*k_corn_runningPNL/100 + `K Corn`*k_corn_lastPrice/100,
+  mutate(k_corn_runningPNL = round(case_when(k_corn_runningPNL != 0 ~ (-1)*k_corn_runningPNL/100 + `Corn K Running Positions`*k_corn_lastPrice/100,
                                        TRUE ~ 0), 2 ))  %>%
   select(c(16, 2, 4, 17,  19, 20, 21)) 
 
@@ -161,7 +161,7 @@ tableZCZ <- left_join(my_sheet,
          `Corn Z Running Positions` = round(`Corn Z Running Positions`, 0)) %>%
  # mutate(k_corn_notional = case_when(`Corn K Running Positions` == 0 ~ k_corn_notional,
  #                                      `Corn K Running Positions` != 0 ~ k_corn_notional + `K Corn`* k_corn_lastPrice )) %>% 
-  mutate(z_corn_runningPNL = round(case_when(z_corn_runningPNL != 0 ~ (-1)*z_corn_runningPNL/100 + `Z Corn`*z_corn_lastPrice/100,
+  mutate(z_corn_runningPNL = round(case_when(z_corn_runningPNL != 0 ~ (-1)*z_corn_runningPNL/100 + `Corn Z Running Positions`*z_corn_lastPrice/100,
                                        TRUE ~ 0), 2 ))  %>%
   select(c(16, 2, 5, 17,  19, 20, 21)) 
 
@@ -192,7 +192,7 @@ tableZSK <- left_join(my_sheet,
          k_soybean_lastPrice = round(todayPricesK$ZS, 2), 
          `K Soybean` = round(`K Soybean`, 0),
          `Soybean K Running Positions` = round(`Soybean K Running Positions`, 0)) %>%
-  mutate(k_soybean_runningPNL = round(case_when(k_soybean_runningPNL != 0 ~ (-1)*k_soybean_runningPNL/100 + `K Soybean`*k_soybean_lastPrice/100,
+  mutate(k_soybean_runningPNL = round(case_when(k_soybean_runningPNL != 0 ~ (-1)*k_soybean_runningPNL/100 + `Soybean K Running Positions`*k_soybean_lastPrice/100,
                                        TRUE ~ 0), 2 ))  %>%
   select(c(16, 2, 6, 17,  19, 20, 21)) 
 
