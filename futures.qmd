@@ -76,7 +76,7 @@ DATAK <- DATA %>% mutate (closeSpot = case_when(symbol == "ZC" ~ close + (.05*ex
                                        symbol == "ZS" ~ close + (.05*exp(close/100 - 1260/100) - 50/100)*100,
                                        symbol == "ZW" ~ close + (.05*exp(close/100 - 600/100) - 25/100)*100))
 
-todayPricesK <- DATAK %>% select(-close) %>% pivot_wider(names_from = symbol, values_from = closeSpot) %>% arrange(Date) %>% last()
+todayPricesK <- DATAK %>% select(-closeSpot) %>% pivot_wider(names_from = symbol, values_from = close) %>% arrange(Date) %>% last()
 ###########
 # New Crop
 DATA1 <- read.csv(url(paste0("http://ondemand.websol.barchart.com/getHistory.csv?apikey=", barchart_key ,"&symbol=ZCZ24&type=daily&startDate=20190101"))) %>%
@@ -89,7 +89,7 @@ DATA2 <- read.csv(url(paste0("http://ondemand.websol.barchart.com/getHistory.csv
   select(symbol, Date, close) %>%
   mutate(symbol = substr(symbol, 1,2))
 
-DATA3 <- read.csv(url(paste0("http://ondemand.websol.barchart.com/getHistory.csv?apikey=", barchart_key ,"&symbol=ZWK24&type=daily&startDate=20190101"))) %>%
+DATA3 <- read.csv(url(paste0("http://ondemand.websol.barchart.com/getHistory.csv?apikey=", barchart_key ,"&symbol=ZWN24&type=daily&startDate=20190101"))) %>%
   mutate(Date = as.Date(tradingDay)) %>% 
   select(symbol, Date, close) %>%
   mutate(symbol = substr(symbol, 1,2))
