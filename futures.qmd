@@ -103,110 +103,34 @@ todayPricesNew <- DATANew %>% select(-closeSpot) %>% pivot_wider(names_from = sy
 
 ```
 
+# Corn
+
+## All Trades in May Corn
+  
 ```{r}
-#March corn Calculations
+
 tableZCK <- left_join(my_sheet,  
-          DATAK %>% select(-close) %>% pivot_wider(names_from = symbol, values_from = closeSpot), 
+          DATAK %>% select(-closeSpot) %>% pivot_wider(names_from = symbol, values_from = close), 
           #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
           #     tibble(Date = as.Date("2024-01-11"), ZC = 461.00, ZS = 1230, ZW = 612)), #For testing only DELETE and uncomment line above!
           by =  "Date") %>% 
-  left_join(DATANew %>% select(-close) %>% pivot_wider(names_from = symbol, values_from = closeSpot), 
+  left_join(DATANew %>% select(-closeSpot) %>% pivot_wider(names_from = symbol, values_from = close), 
           #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
           #     tibble(Date = as.Date("2024-01-11"), ZC = 461.00, ZS = 1230, ZW = 612)), #For testing only DELETE and uncomment line above!
           by =  "Date") %>%
   group_by(`Partial Email`) %>%
   arrange(`Partial Email`) %>% 
-  mutate(TradeDate = Date) %>%
+  mutate(TradeDate = Date) %>%  
   mutate_if(is.numeric, ~ifelse(is.na(.), 0, .)) %>% # replace na's with zeros becasue it kills cumsum
-  mutate(`Corn K Running Positions` = round(cumsum(`K Corn`), 0),
-         k_corn_notional = `K Corn`*ZC.x,
-         k_corn_runningPNL = cumsum(k_corn_notional),
-         `K Corn Trade Price` = round(ZC.x, 2),
-         k_corn_lastPrice = round(todayPricesK$ZC, 2), 
-         `K Corn` = round(`K Corn`, 0),
-         `Corn K Running Positions` = round(`Corn K Running Positions`, 0),
-         cumsumnotional = cumsum(k_corn_notional)) %>%
- # mutate(k_corn_notional = case_when(`Corn K Running Positions` == 0 ~ k_corn_notional,
- #                                      `Corn K Running Positions` != 0 ~ k_corn_notional + `K Corn`* k_corn_lastPrice )) %>% 
-  mutate(k_corn_runningPNL = round(case_when(k_corn_runningPNL != 0 ~ (-1)*k_corn_runningPNL/100 + `Corn K Running Positions`*k_corn_lastPrice/100,
-                                       TRUE ~ 0), 2 ))  %>%
-  select(c(16, 2, 4, 17,  19, 20, 21)) 
+  select(c(2,3,4,10))
 
+colnames(tableZCK) <- c('Partial Email', "Date", "K Corn Trade in Bushels", "Price of Trade in K Corn")
 
-new_column_names <-  c("K Corn Trades", "K Corn Running Positions", "K Corn Running PNL", "K Corn Trade Price", "K Corn Last Price")
-colnames(tableZCK)[3:7] <- new_column_names
-```
-
-```{r}
-# Dec corn Calculations
-tableZCZ <- left_join(my_sheet,  
-          DATAK %>% select(-close) %>% pivot_wider(names_from = symbol, values_from = closeSpot), 
-          #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
-          #     tibble(Date = as.Date("2024-01-11"), ZC = 461.00, ZS = 1230, ZW = 612)), #For testing only DELETE and uncomment line above!
-          by =  "Date") %>% 
-  left_join(DATANew %>% select(-close) %>% pivot_wider(names_from = symbol, values_from = closeSpot), 
-          #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
-          #     tibble(Date = as.Date("2024-01-11"), ZC = 461.00, ZS = 1230, ZW = 612)), #For testing only DELETE and uncomment line above!
-          by =  "Date") %>%
-  group_by(`Partial Email`) %>%
-  arrange(`Partial Email`) %>% 
-  mutate(TradeDate = Date) %>%
-  mutate_if(is.numeric, ~ifelse(is.na(.), 0, .)) %>% # replace na's with zeros becasue it kills cumsum
-  mutate(`Corn Z Running Positions` = round(cumsum(`Z Corn`), 0),
-         z_corn_notional = `Z Corn`*ZC.y,
-         z_corn_runningPNL = cumsum(z_corn_notional),
-         `Z Corn Trade Price` = round(ZC.y, 2),
-         z_corn_lastPrice = round(todayPricesNew$ZC, 2), 
-         `Z Corn` = round(`Z Corn`, 0),
-         `Corn Z Running Positions` = round(`Corn Z Running Positions`, 0)) %>%
- # mutate(k_corn_notional = case_when(`Corn K Running Positions` == 0 ~ k_corn_notional,
- #                                      `Corn K Running Positions` != 0 ~ k_corn_notional + `K Corn`* k_corn_lastPrice )) %>% 
-  mutate(z_corn_runningPNL = round(case_when(z_corn_runningPNL != 0 ~ (-1)*z_corn_runningPNL/100 + `Corn Z Running Positions`*z_corn_lastPrice/100,
-                                       TRUE ~ 0), 2 ))  %>%
-  select(c(16, 2, 5, 17,  19, 20, 21)) 
-
-
-new_column_names <-  c("Z Corn Trades", "Z Corn Running Positions", "Z Corn Running PNL", "Z Corn Trade Price", "Z Corn Last Price")
-colnames(tableZCZ)[3:7] <- new_column_names
-```
-
-```{r}
-#March soybean Calculations
-tableZSK <- left_join(my_sheet,  
-          DATAK %>% select(-close) %>% pivot_wider(names_from = symbol, values_from = closeSpot), 
-          #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
-          #     tibble(Date = as.Date("2024-01-11"), ZC = 461.00, ZS = 1230, ZW = 612)), #For testing only DELETE and uncomment line above!
-          by =  "Date") %>% 
-  left_join(DATANew %>% select(-close) %>% pivot_wider(names_from = symbol, values_from = closeSpot), 
-          #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
-          #     tibble(Date = as.Date("2024-01-11"), ZC = 461.00, ZS = 1230, ZW = 612)), #For testing only DELETE and uncomment line above!
-          by =  "Date") %>%
-  group_by(`Partial Email`) %>%
-  arrange(`Partial Email`) %>% 
-  mutate(TradeDate = Date) %>%
-  mutate_if(is.numeric, ~ifelse(is.na(.), 0, .)) %>% # replace na's with zeros becasue it kills cumsum
-  mutate(`Soybean K Running Positions` = round(cumsum(`K Soybean`), 0),
-         k_soybean_notional = `K Soybean`*ZS.x,
-         k_soybean_runningPNL = cumsum(k_soybean_notional),
-         `K Soybean Trade Price` = round(ZS.x,2),
-         k_soybean_lastPrice = round(todayPricesK$ZS, 2), 
-         `K Soybean` = round(`K Soybean`, 0),
-         `Soybean K Running Positions` = round(`Soybean K Running Positions`, 0)) %>%
-  mutate(k_soybean_runningPNL = round(case_when(k_soybean_runningPNL != 0 ~ (-1)*k_soybean_runningPNL/100 + `Soybean K Running Positions`*k_soybean_lastPrice/100,
-                                       TRUE ~ 0), 2 ))  %>%
-  select(c(16, 2, 6, 17,  19, 20, 21)) 
-
-
-new_column_names <-  c("K Soybean Trades", "K Soybean Running Positions", "K Soybean Running PNL", "K Soybean Trade Price", "K Soybean Last Price")
-colnames(tableZSK)[3:7] <- new_column_names
-```
-
-## March Corn Trades, Profit and Loss
-
-```{r}
 tableZCK %>% 
  knitr::kable("html", table.attr = "id='myTableZCK'") 
+
 ```
+
 
 ```{=html}
 <script>
@@ -215,13 +139,70 @@ tableZCK %>%
   });
   </script>
 ```
-## Dec Corn Trades Profit and Loss
+
+
+## Net Profit/Loss in May Corn
+
+This number includes both closed trades and open trades. Open positions are found in the Net Position column. Net Position is in bushels, PNL is in dollars. 
 
 ```{r}
 
-tableZCZ %>% 
- knitr::kable("html", table.attr = "id='myTableZCZ'") 
+# This table calculates overall PNL
+tableZCK <- left_join(my_sheet,  
+          DATAK %>% select(-closeSpot) %>% pivot_wider(names_from = symbol, values_from = close), 
+          #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
+          #     tibble(Date = as.Date("2024-01-11"), ZC = 461.00, ZS = 1230, ZW = 612)), #For testing only DELETE and uncomment line above!
+          by =  "Date") %>% 
+  left_join(DATANew %>% select(-closeSpot) %>% pivot_wider(names_from = symbol, values_from = close), 
+          #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
+          #     tibble(Date = as.Date("2024-01-11"), ZC = 461.00, ZS = 1230, ZW = 612)), #For testing only DELETE and uncomment line above!
+          by =  "Date") %>%
+  group_by(`Partial Email`) %>%
+  arrange(`Partial Email`) %>% 
+  mutate(TradeDate = Date) %>%  
+  mutate_if(is.numeric, ~ifelse(is.na(.), 0, .)) %>% # replace na's with zeros becasue it kills cumsum
+  select(c(2,3,4,10)) %>% 
+  summarize(NetPos = sum(`K Corn`), PNL = (-sum(`K Corn`*ZC.x) + (NetPos)*todayPricesK$ZC)/100, "Current Price K Corn" = todayPricesK$ZC)
+
+tableZCK$PNL <- round(tableZCK$PNL, 2)
+colnames(tableZCK) <- c("Partial Email", "Net Position", "PNL", "Current Price K Corn")
+
+tableZCK  %>% 
+ knitr::kable("html", table.attr = "id='myTableZCKPNL'") 
+
 ```
+
+
+```{=html}
+<script>
+  $(document).ready( function () {
+      $('#myTableZCKPNL').DataTable();
+  });
+  </script>
+```
+  
+## All Trades in Dec Corn
+  
+```{r}
+
+tableZCZ <- left_join(my_sheet,  
+          DATAK %>% select(-closeSpot) %>% pivot_wider(names_from = symbol, values_from = close), 
+          by =  "Date") %>% 
+  left_join(DATANew %>% select(-closeSpot) %>% pivot_wider(names_from = symbol, values_from = close), 
+          by =  "Date") %>%
+  group_by(`Partial Email`) %>%
+  arrange(`Partial Email`) %>% 
+  mutate(TradeDate = Date) %>%  
+  mutate_if(is.numeric, ~ifelse(is.na(.), 0, .)) %>% # replace na's with zeros becasue it kills cumsum
+  select(c(2,3,5,13))
+
+colnames(tableZCZ) <- c('Partial Email', "Date", "Z Corn Trade in Bushels", "Price of Trade in Z Corn")
+
+tableZCZ   %>% 
+ knitr::kable("html", table.attr = "id='myTableZCZ'") 
+
+```
+
 
 ```{=html}
 <script>
@@ -230,13 +211,74 @@ tableZCZ %>%
   });
   </script>
 ```
-## March Soybean Trades Profit and Loss
+
+## Net Profit/Loss in December Corn
+
+This number includes both closed trades and open trades. Open positions are found in the Net Position column. Net Position is in bushels, PNL is in dollars. 
 
 ```{r}
 
+# This table calculates overall PNL
+tableZCZ <- left_join(my_sheet,  
+          DATAK %>% select(-closeSpot) %>% pivot_wider(names_from = symbol, values_from = close), 
+          #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
+          #     tibble(Date = as.Date("2024-01-11"), ZC = 461.00, ZS = 1230, ZW = 612)), #For testing only DELETE and uncomment line above!
+          by =  "Date") %>% 
+  left_join(DATANew %>% select(-closeSpot) %>% pivot_wider(names_from = symbol, values_from = close), 
+          #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
+          #     tibble(Date = as.Date("2024-01-11"), ZC = 461.00, ZS = 1230, ZW = 612)), #For testing only DELETE and uncomment line above!
+          by =  "Date") %>%
+  group_by(`Partial Email`) %>%
+  arrange(`Partial Email`) %>% 
+  mutate(TradeDate = Date) %>%  
+  mutate_if(is.numeric, ~ifelse(is.na(.), 0, .)) %>% # replace na's with zeros becasue it kills cumsum
+  select(c(2,3,5,13)) %>% 
+  summarize(NetPos = sum(`Z Corn`), PNL = (-sum(`Z Corn`*ZC.y) + (NetPos)*todayPricesNew$ZC)/100, "Current Price Z Corn" = todayPricesNew$ZC)
+
+tableZCZ$PNL <- round(tableZCZ$PNL, 2)
+colnames(tableZCZ) <- c("Partial Email", "Net Position", "PNL", "Current Price Z Corn")
+
+tableZCZ   %>% 
+ knitr::kable("html", table.attr = "id='myTableZCZPNL'") 
+
+```
+
+
+```{=html}
+<script>
+  $(document).ready( function () {
+      $('#myTableZCZPNL').DataTable();
+  });
+  </script>
+```
+
+# Soybeans
+## All Trades in May Soybeans
+  
+```{r}
+
+tableZSK <- left_join(my_sheet,  
+          DATAK %>% select(-closeSpot) %>% pivot_wider(names_from = symbol, values_from = close), 
+          #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
+          #     tibble(Date = as.Date("2024-01-11"), ZC = 461.00, ZS = 1230, ZW = 612)), #For testing only DELETE and uncomment line above!
+          by =  "Date") %>% 
+  left_join(DATANew %>% select(-closeSpot) %>% pivot_wider(names_from = symbol, values_from = close), 
+          #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
+          #     tibble(Date = as.Date("2024-01-11"), ZC = 461.00, ZS = 1230, ZW = 612)), #For testing only DELETE and uncomment line above!
+          by =  "Date") %>%
+  group_by(`Partial Email`) %>%
+  arrange(`Partial Email`) %>% 
+  mutate(TradeDate = Date) %>%  
+  mutate_if(is.numeric, ~ifelse(is.na(.), 0, .)) %>% # replace na's with zeros becasue it kills cumsum
+  select(c(2,3,6,11))
+
+colnames(tableZSK) <- c('Partial Email', "Date", "K Soybean Trade in Bushels", "Price of Trade in K Soybean")
+
 tableZSK %>% 
  knitr::kable("html", table.attr = "id='myTableZSK'") 
+
 ```
+
 
 ```{=html}
 <script>
@@ -245,63 +287,275 @@ tableZSK %>%
   });
   </script>
 ```
-```{r}
-# Trades Data Structure
-# Columns: TradeID, TradeDate, Partial Email, Instrument, Quantity, Price
-trades <- data.frame(
-  TradeID = character(),
-  TradeDate = as.Date(character()),
-  `Partial Email` = character(),
-  Instrument = character(),
-  Quantity = numeric(),
-  Price = numeric(),
-  stringsAsFactors = FALSE,
-  check.names = FALSE
-)
 
-# Positions Data Structure
-# Columns: Partial Email, Instrument, Quantity, AvgPrice
-positions <- data.frame(
-  `Partial Email` = 'MMMM',
-  Instrument = "C Corn",
-  Quantity = 1000,
-  AvgPrice = 500,
-  stringsAsFactors = FALSE,
-  check.names = FALSE
-)
 
-# Function to process new trades and update positions
-update_positions <- function(new_trades, existing_positions) {
-  # Combine new trades with existing trades
-  all_trades <- bind_rows(trades, new_trades)
+## Net Profit/Loss in May Soybeans
 
-  # Update positions
-  updated_positions <- all_trades %>%
-    group_by(`Partial Email`, Instrument) %>%
-    summarise(
-      Quantity = sum(Quantity),
-      AvgPrice = sum(Quantity * Price) / sum(Quantity),
-      .groups = 'drop'
-    ) %>%
-    filter(Quantity != 0)  # Removing closed positions
-
-  return(list(trades = all_trades, positions = updated_positions))
-}
-```
+This number includes both closed trades and open trades. Open positions are found in the Net Position column. Net Position is in bushels, PNL is in dollars. 
 
 ```{r}
-# Example: Adding a new trade
-new_trade <- data.frame(
-  TradeID = "T002",
-  TradeDate = as.Date("2024-01-10"),
-  `Partial Email` = "email@example.com",
-  Instrument = "K Corn",
-  Quantity = -100,
-  Price = 552.6993
-)
 
-# Update positions with new trade
-result <- update_positions(new_trade, positions)
-trades <- result$trades
-positions <- result$positions
+# This table calculates overall PNL
+tableZSK <- left_join(my_sheet,  
+          DATAK %>% select(-closeSpot) %>% pivot_wider(names_from = symbol, values_from = close), 
+          #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
+          #     tibble(Date = as.Date("2024-01-11"), ZC = 461.00, ZS = 1230, ZW = 612)), #For testing only DELETE and uncomment line above!
+          by =  "Date") %>% 
+  left_join(DATANew %>% select(-closeSpot) %>% pivot_wider(names_from = symbol, values_from = close), 
+          #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
+          #     tibble(Date = as.Date("2024-01-11"), ZC = 461.00, ZS = 1230, ZW = 612)), #For testing only DELETE and uncomment line above!
+          by =  "Date") %>%
+  group_by(`Partial Email`) %>%
+  arrange(`Partial Email`) %>% 
+  mutate(TradeDate = Date) %>%  
+  mutate_if(is.numeric, ~ifelse(is.na(.), 0, .)) %>% # replace na's with zeros becasue it kills cumsum
+  select(c(2,3,6,11)) %>% 
+  summarize(NetPos = sum(`K Soybean`), PNL = (-sum(`K Soybean`*ZS.x) + (NetPos)*todayPricesK$ZS)/100, "Current Price K Soybeans" = todayPricesK$ZS)
+
+tableZSK$PNL <- round(tableZSK$PNL, 2)
+colnames(tableZSK) <- c("Partial Email", "Net Position", "PNL", "Current Price K Sobyean")
+
+tableZSK  %>% 
+ knitr::kable("html", table.attr = "id='myTableZSKPNL'") 
+
 ```
+
+
+```{=html}
+<script>
+  $(document).ready( function () {
+      $('#myTableZSKPNL').DataTable();
+  });
+  </script>
+```
+
+## All Trades in December Soybeans
+  
+```{r}
+
+tableZSX <- left_join(my_sheet,  
+          DATAK %>% select(-closeSpot) %>% pivot_wider(names_from = symbol, values_from = close), 
+          #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
+          #     tibble(Date = as.Date("2024-01-11"), ZC = 461.00, ZS = 1230, ZW = 612)), #For testing only DELETE and uncomment line above!
+          by =  "Date") %>% 
+  left_join(DATANew %>% select(-closeSpot) %>% pivot_wider(names_from = symbol, values_from = close), 
+          #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
+          #     tibble(Date = as.Date("2024-01-11"), ZC = 461.00, ZS = 1230, ZW = 612)), #For testing only DELETE and uncomment line above!
+          by =  "Date") %>%
+  group_by(`Partial Email`) %>%
+  arrange(`Partial Email`) %>% 
+  mutate(TradeDate = Date) %>%  
+  mutate_if(is.numeric, ~ifelse(is.na(.), 0, .)) %>% # replace na's with zeros becasue it kills cumsum
+  select(c(2,3,7,14))
+
+colnames(tableZSX) <- c('Partial Email', "Date", "X Soybean Trade in Bushels", "Price of Trade in X Soybean")
+
+tableZSX %>% 
+ knitr::kable("html", table.attr = "id='myTableZSX'") 
+
+```
+
+
+```{=html}
+<script>
+  $(document).ready( function () {
+      $('#myTableZSX').DataTable();
+  });
+  </script>
+```
+
+## Net Profit/Loss in December Soybeans
+
+This number includes both closed trades and open trades. Open positions are found in the Net Position column. Net Position is in bushels, PNL is in dollars. 
+
+```{r}
+
+# This table calculates overall PNL
+tableZSX <- left_join(my_sheet,  
+          DATAK %>% select(-closeSpot) %>% pivot_wider(names_from = symbol, values_from = close), 
+          #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
+          #     tibble(Date = as.Date("2024-01-11"), ZC = 461.00, ZS = 1230, ZW = 612)), #For testing only DELETE and uncomment line above!
+          by =  "Date") %>% 
+  left_join(DATANew %>% select(-closeSpot) %>% pivot_wider(names_from = symbol, values_from = close), 
+          #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
+          #     tibble(Date = as.Date("2024-01-11"), ZC = 461.00, ZS = 1230, ZW = 612)), #For testing only DELETE and uncomment line above!
+          by =  "Date") %>%
+  group_by(`Partial Email`) %>%
+  arrange(`Partial Email`) %>% 
+  mutate(TradeDate = Date) %>%  
+  mutate_if(is.numeric, ~ifelse(is.na(.), 0, .)) %>% # replace na's with zeros becasue it kills cumsum
+  select(c(2,3,7,14)) %>% 
+  summarize(NetPos = sum(`X Soybean`), PNL = (-sum(`X Soybean`*ZS.y) + (NetPos)*todayPricesNew$ZS)/100, "Current Price X Soybeans" = todayPricesNew$ZS)
+
+tableZSX$PNL <- round(tableZSX$PNL, 2)
+colnames(tableZSX) <- c("Partial Email", "Net Position", "PNL", "Current Price X Sobyean")
+
+tableZSX  %>% 
+ knitr::kable("html", table.attr = "id='myTableZSXPNL'") 
+
+```
+
+
+```{=html}
+<script>
+  $(document).ready( function () {
+      $('#myTableZSXPNL').DataTable();
+  });
+  </script>
+```
+
+# Wheat
+
+## All Trades in May Wheat
+  
+```{r}
+
+tableZWK <- left_join(my_sheet,  
+          DATAK %>% select(-closeSpot) %>% pivot_wider(names_from = symbol, values_from = close), 
+          #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
+          #     tibble(Date = as.Date("2024-01-11"), ZC = 461.00, ZS = 1230, ZW = 612)), #For testing only DELETE and uncomment line above!
+          by =  "Date") %>% 
+  left_join(DATANew %>% select(-closeSpot) %>% pivot_wider(names_from = symbol, values_from = close), 
+          #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
+          #     tibble(Date = as.Date("2024-01-11"), ZC = 461.00, ZS = 1230, ZW = 612)), #For testing only DELETE and uncomment line above!
+          by =  "Date") %>%
+  group_by(`Partial Email`) %>%
+  arrange(`Partial Email`) %>% 
+  mutate(TradeDate = Date) %>%  
+  mutate_if(is.numeric, ~ifelse(is.na(.), 0, .)) %>% # replace na's with zeros becasue it kills cumsum
+  select(c(2,3,8,12))
+
+colnames(tableZWK) <- c('Partial Email', "Date", "K Wheat Trade in Bushels", "Price of Trade in K Wheat")
+
+tableZWK %>% 
+ knitr::kable("html", table.attr = "id='myTableZWK'") 
+
+```
+
+
+```{=html}
+<script>
+  $(document).ready( function () {
+      $('#myTableZWK').DataTable();
+  });
+  </script>
+```
+
+
+## Net Profit/Loss in May Wheat
+
+This number includes both closed trades and open trades. Open positions are found in the Net Position column. Net Position is in bushels, PNL is in dollars. 
+
+```{r}
+
+# This table calculates overall PNL
+tableZWK <- left_join(my_sheet,  
+          DATAK %>% select(-closeSpot) %>% pivot_wider(names_from = symbol, values_from = close), 
+          #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
+          #     tibble(Date = as.Date("2024-01-11"), ZC = 461.00, ZS = 1230, ZW = 612)), #For testing only DELETE and uncomment line above!
+          by =  "Date") %>% 
+  left_join(DATANew %>% select(-closeSpot) %>% pivot_wider(names_from = symbol, values_from = close), 
+          #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
+          #     tibble(Date = as.Date("2024-01-11"), ZC = 461.00, ZS = 1230, ZW = 612)), #For testing only DELETE and uncomment line above!
+          by =  "Date") %>%
+  group_by(`Partial Email`) %>%
+  arrange(`Partial Email`) %>% 
+  mutate(TradeDate = Date) %>%  
+  mutate_if(is.numeric, ~ifelse(is.na(.), 0, .)) %>% # replace na's with zeros becasue it kills cumsum
+  select(c(2,3,8,12)) %>% 
+  summarize(NetPos = sum(`K Wheat`), PNL = (-sum(`K Wheat`*ZW.x) + (NetPos)*todayPricesK$ZW)/100, "Current Price K Wheat" = todayPricesK$ZW)
+
+tableZWK$PNL <- round(tableZWK$PNL, 2)
+colnames(tableZWK) <- c("Partial Email", "Net Position", "PNL", "Current Price K Wheat")
+
+tableZWK  %>% 
+ knitr::kable("html", table.attr = "id='myTableZWKPNL'") 
+
+```
+
+
+```{=html}
+<script>
+  $(document).ready( function () {
+      $('#myTableZWKPNL').DataTable();
+  });
+  </script>
+```
+
+
+## All Trades in December Wheat
+  
+```{r}
+
+tableZWZ <- left_join(my_sheet,  
+          DATAK %>% select(-closeSpot) %>% pivot_wider(names_from = symbol, values_from = close), 
+          #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
+          #     tibble(Date = as.Date("2024-01-11"), ZC = 461.00, ZS = 1230, ZW = 612)), #For testing only DELETE and uncomment line above!
+          by =  "Date") %>% 
+  left_join(DATANew %>% select(-closeSpot) %>% pivot_wider(names_from = symbol, values_from = close), 
+          #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
+          #     tibble(Date = as.Date("2024-01-11"), ZC = 461.00, ZS = 1230, ZW = 612)), #For testing only DELETE and uncomment line above!
+          by =  "Date") %>%
+  group_by(`Partial Email`) %>%
+  arrange(`Partial Email`) %>% 
+  mutate(TradeDate = Date) %>%  
+  mutate_if(is.numeric, ~ifelse(is.na(.), 0, .)) %>% # replace na's with zeros becasue it kills cumsum
+  select(c(2,3,9,15))
+
+colnames(tableZWZ) <- c('Partial Email', "Date", "Z Wheat Trade in Bushels", "Price of Trade in Z Wheat")
+
+tableZWZ %>% 
+ knitr::kable("html", table.attr = "id='myTableZWZ'") 
+
+```
+
+
+```{=html}
+<script>
+  $(document).ready( function () {
+      $('#myTableZWZ').DataTable();
+  });
+  </script>
+```
+
+
+## Net Profit/Loss in December Wheat
+
+This number includes both closed trades and open trades. Open positions are found in the Net Position column. Net Position is in bushels, PNL is in dollars. 
+
+```{r}
+
+# This table calculates overall PNL
+tableZWZ <- left_join(my_sheet,  
+          DATAK %>% select(-closeSpot) %>% pivot_wider(names_from = symbol, values_from = close), 
+          #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
+          #     tibble(Date = as.Date("2024-01-11"), ZC = 461.00, ZS = 1230, ZW = 612)), #For testing only DELETE and uncomment line above!
+          by =  "Date") %>% 
+  left_join(DATANew %>% select(-closeSpot) %>% pivot_wider(names_from = symbol, values_from = close), 
+          #rbind(DATA %>% pivot_wider(names_from = symbol, values_from = close),
+          #     tibble(Date = as.Date("2024-01-11"), ZC = 461.00, ZS = 1230, ZW = 612)), #For testing only DELETE and uncomment line above!
+          by =  "Date") %>%
+  group_by(`Partial Email`) %>%
+  arrange(`Partial Email`) %>% 
+  mutate(TradeDate = Date) %>%  
+  mutate_if(is.numeric, ~ifelse(is.na(.), 0, .)) %>% # replace na's with zeros becasue it kills cumsum
+  select(c(2,3,9,15)) %>% 
+  summarize(NetPos = sum(`Z Wheat`), PNL = (-sum(`Z Wheat`*ZW.y) + (NetPos)*todayPricesNew$ZW)/100, "Current Price Z Wheat" = todayPricesNew$ZW)
+
+tableZWZ$PNL <- round(tableZWZ$PNL, 2)
+colnames(tableZWZ) <- c("Partial Email", "Net Position", "PNL", "Current Price Z Wheat")
+
+tableZWZ  %>% 
+ knitr::kable("html", table.attr = "id='myTableZWZPNL'") 
+
+```
+
+
+```{=html}
+<script>
+  $(document).ready( function () {
+      $('#myTableZWZPNL').DataTable();
+  });
+  </script>
+```
+
