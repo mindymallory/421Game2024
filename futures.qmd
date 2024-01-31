@@ -42,10 +42,11 @@ colnames(my_sheet)[3:8] <- new_column_names
 my_sheet <- my_sheet %>%
   rowwise() %>%
   mutate(
-    Date = if_else(
-      hour(Timestamp) < 13 || (hour(Timestamp) == 13 && minute(Timestamp) < 20),
-      as.Date(Timestamp),
-      as.Date(Timestamp) + days(1)
+    Date = case_when(
+      wday(Timestamp) %in% 2:6 & (hour(Timestamp) < 14 || (hour(Timestamp) == 14 && minute(Timestamp) < 20)) ~ as.Date(Timestamp),
+      wday(Timestamp) %in% 2:6 & (hour(Timestamp) > 14 || (hour(Timestamp) == 14 && minute(Timestamp) >= 20)) ~ as.Date(Timestamp) + days(1),
+      wday(Timestamp) == 1 ~ as.Date(Timestamp) + days(1),  # From Sunday to Monday
+      wday(Timestamp) == 7 ~ as.Date(Timestamp) + days(2)   # From Saturday to Monday
     )
   )
 
