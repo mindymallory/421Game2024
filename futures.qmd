@@ -560,3 +560,36 @@ tableZWZ  %>%
   </script>
 ```
 
+## Summary of PNL for All Contracts 
+
+```{r}
+summaryPNL <- tableZCK %>% 
+  inner_join( tableZCZ, by = "Partial Email") %>% 
+  select(c("Partial Email", PNL.x, PNL.y)) %>% 
+  inner_join(tableZSK, by = "Partial Email") %>% 
+  inner_join(tableZSX, by = "Partial Email") %>% 
+  select(c("Partial Email", PNL.x, PNL.y, PNL.x.x, PNL.y.y)) %>% 
+  inner_join(tableZWK, by = "Partial Email") %>% 
+  inner_join(tableZWZ, by = "Partial Email") %>% 
+  select(c("Partial Email", PNL.x, PNL.y, PNL.x.x, PNL.y.y, PNL.x.x.x, PNL.y.y.y)) %>% 
+   rename(
+    `PNL May Corn` = PNL.x, 
+    `PNL Dec Corn` = PNL.y, 
+    `PNL May Soybean` = PNL.x.x, 
+    `PNL November Soybean` = PNL.y.y,
+    `PNL May Wheat` = PNL.x.x.x,
+    `PNL December Wheat` = PNL.y.y.y
+  ) %>% 
+  mutate(`Total PNL` = rowSums(select(., -`Partial Email`), na.rm = TRUE))
+
+summaryPNL %>%
+ knitr::kable("html", table.attr = "id='summaryPNL'") 
+```
+
+```{=html}
+<script>
+  $(document).ready( function () {
+      $('#myTableZWZPNL').DataTable();
+  });
+  </script>
+```
