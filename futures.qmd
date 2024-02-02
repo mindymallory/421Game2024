@@ -560,7 +560,7 @@ tableZWZ  %>%
   </script>
 ```
 
-## Summary of PNL for All Contracts 
+# Summary of PNL for All Contracts 
 
 ```{r}
 summaryPNL <- tableZCK %>% 
@@ -589,7 +589,7 @@ summaryPNL %>%
 ```{=html}
 <script>
   $(document).ready( function () {
-      $('#myTableZWZPNL').DataTable();
+      $('#summaryPNL').DataTable();
   });
   </script>
 ```
