@@ -17,6 +17,15 @@ barchart_key <- Sys.getenv("BARCHART_Key")
 ```
 
 
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+
+```{=html}
+<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+```
+```{=html}
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+```
+
 ```{r}
 ###########
 # Get futures prices  
