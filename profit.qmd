@@ -12,6 +12,7 @@ library(googlesheets4)
 library(tidyr)
 library(kableExtra)
 library(hms)
+library(scales)
 barchart_key <- Sys.getenv("BARCHART_Key")
 
 ```
@@ -59,6 +60,7 @@ todayPricesNew <- DATANew %>% select(-closeSpot) %>% pivot_wider(names_from = sy
 # Futures trades PNL
 futuresPNL <- read.csv("summaryPNL.csv")
 futuresPNL %>% 
+  mutate(across(where(is.numeric), ~comma(., accuracy = 1))) %>%
  knitr::kable("html", table.attr = "id='futuresPNL'") 
 
 ```
@@ -73,6 +75,7 @@ futuresPNL %>%
 
 ## Revenue from Spot and Forward Sales of 2023 Bushels and Forward Sales of 2024 Bushels
 
+Figures are rounded to nearest dollar. 
 ```{r}
 # Spot/forward Sales revanue
 corn_spot_forward_Revenue <- read.csv("Corn_spotforward_sales.csv") %>% 
@@ -98,10 +101,18 @@ spot_forward_rev <- corn_spot_forward_Revenue %>%
   inner_join(sobyean_spot_forward_Revenue, by = "Partial.Email") %>% 
   inner_join(wheat_spot_forward_Revenue, by = "Partial.Email")
 
-spot_forward_rev %>% 
-  kable("html", escape = FALSE) %>%
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+spot_forward_rev  %>% 
+  mutate(across(where(is.numeric), ~comma(round(., 0), accuracy = 1))) %>%
+  knitr::kable("html", table.attr = "id='spotforward'") 
 
+```
+
+```{=html}
+<script>
+  $(document).ready( function () {
+      $('#spotforward').DataTable();
+  });
+  </script>
 ```
 
 
@@ -126,12 +137,24 @@ bushels <- read.csv("acreage.csv") %>%
 
 ```
 
-## Revenue from New Crop Spot Sales (Expected Bushels - 2024 Forward Contracted Bushels)
+## Revenue from New Crop Spot Sales 
+
+### Latest New Crop Futures Prices
+
+These are used to calculate expected revenue from spot sales at 2024 harvest.
+```{r}
+
+todayPricesNew %>%  
+ knitr::kable()
+
+
+```
+
+### Expected Revenue for Spot Sales at 2024 Harvest
+
+Expected bushels available for spot sales at harvest are total expected bushels minus any bushels forward contracted. E.g., Expected Bushels - 2024 Forward Contracted Bushels. Then, this number is multiplied by the current new crop futures prices to get expected revenue from spot sales at 2024 harvest. 
 
 ```{r}
-print("Latest New Crop Futures Prices")
-todayPricesNew
-
 # Calculate expected revenue from spot sales at 2024 harvest
 new_crop_spot <- bushels %>% inner_join( read.csv("Corn_spotforward_sales.csv") %>% select(c(2, 7)), by = "Partial.Email") %>% 
   inner_join(read.csv("Soybean_spotforward_sales.csv") %>% select(2, 7), by = "Partial.Email") %>% 
@@ -145,11 +168,21 @@ new_crop_spot <- bushels %>% inner_join( read.csv("Corn_spotforward_sales.csv") 
          Exp_New_Wheat_Rev = SpotWheat_Bushels*todayPricesNew$ZW/100) %>% 
   select(c(1, 5:7))
 
-new_crop_spot  %>% 
-  kable("html", escape = FALSE) %>%
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+new_crop_spot   %>% 
+  mutate(across(where(is.numeric), ~comma(round(., 0), accuracy = 1))) %>%
+ knitr::kable("html", table.attr = "id='newcropspot'") 
 
 ```
+
+```{=html}
+<script>
+  $(document).ready( function () {
+      $('#newcropspot').DataTable();
+  });
+  </script>
+```
+
+
 
 ## Crop Insurance Indemnity Payment
 
@@ -169,18 +202,33 @@ total <- futuresPNL %>%
 
 total %>%
   select(c(2, 20)) %>% 
-  kable("html", escape = FALSE) %>%
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+  mutate(across(where(is.numeric), ~comma(round(., 0), accuracy = 1))) %>%
+ knitr::kable("html", table.attr = "id='allrev'") 
 
 ```
 
+```{=html}
+<script>
+  $(document).ready( function () {
+      $('#allrev').DataTable();
+  });
+  </script>
+```
 
 
 ## Aggregate Revenue Detailed View 
 
 ```{r}
-total %>%
-  kable("html", escape = FALSE) %>%
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+total  %>% 
+  mutate(across(where(is.numeric), ~comma(round(., 0), accuracy = 1))) %>%
+ knitr::kable("html", table.attr = "id='allrevdetail'") 
+
 ```
 
+```{=html}
+<script>
+  $(document).ready( function () {
+      $('#allrevdetail').DataTable();
+  });
+  </script>
+```
