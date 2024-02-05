@@ -163,8 +163,7 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="futures-trades-profit-and-loss">Futures Trades Profit and Loss</h2>
 <div class="cell">
 <div class="cell-output-display">
-<div class="table-responsive">
-<table class="table table-striped table-hover table-condensed table-sm small" data-quarto-postprocess="true">
+<table id="futuresPNL" data-quarto-postprocess="true" class="table table-sm table-striped small">
 <thead>
 <tr class="header">
 <th style="text-align: right;" data-quarto-table-cell-role="th">X</th>
@@ -588,11 +587,16 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 </tbody>
 </table>
-</div>
 
 
 </div>
 </div>
+
+<script>
+  $(document).ready( function () {
+      $('#futuresPNL').DataTable();
+  });
+  </script>
 </section>
 <section id="revenue-from-spot-and-forward-sales-of-2023-bushels-and-forward-sales-of-2024-bushels" class="level2">
 <h2 class="anchored" data-anchor-id="revenue-from-spot-and-forward-sales-of-2023-bushels-and-forward-sales-of-2024-bushels">Revenue from Spot and Forward Sales of 2023 Bushels and Forward Sales of 2024 Bushels</h2>

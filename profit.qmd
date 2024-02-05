@@ -50,8 +50,16 @@ todayPricesNew <- DATANew %>% select(-closeSpot) %>% pivot_wider(names_from = sy
 # Futures trades PNL
 futuresPNL <- read.csv("summaryPNL.csv")
 futuresPNL %>% 
-  kable("html", escape = FALSE) %>%
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+ knitr::kable("html", table.attr = "id='futuresPNL'") 
+
+```
+
+```{=html}
+<script>
+  $(document).ready( function () {
+      $('#futuresPNL').DataTable();
+  });
+  </script>
 ```
 
 ## Revenue from Spot and Forward Sales of 2023 Bushels and Forward Sales of 2024 Bushels
