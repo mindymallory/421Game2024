@@ -44,9 +44,10 @@ my_sheet <- my_sheet %>%
   mutate(
     Date = case_when(
       wday(Timestamp) %in% 2:6 & (hour(Timestamp) < 14 || (hour(Timestamp) == 14 && minute(Timestamp) < 20)) ~ as.Date(Timestamp),
-      wday(Timestamp) %in% 2:6 & (hour(Timestamp) > 14 || (hour(Timestamp) == 14 && minute(Timestamp) >= 20)) ~ as.Date(Timestamp) + days(1),
-      wday(Timestamp) == 1 ~ as.Date(Timestamp) + days(1),  # From Sunday to Monday
-      wday(Timestamp) == 7 ~ as.Date(Timestamp) + days(2)   # From Saturday to Monday
+      wday(Timestamp) %in% 2:6 & (hour(Timestamp) > 14 || (hour(Timestamp) == 14 && minute(Timestamp) >= 20)) ~ as.Date(Timestamp) + days(1))) %>%
+  mutate(Date = case_when(wday(Date) == 1 ~ as.Date(Date) + days(1),  # From Sunday to Monday
+      wday(Date) == 7 ~ as.Date(Date) + days(2),   # From Saturday to Monday
+      TRUE ~ as.Date(Date)
     )
   )
 
@@ -581,6 +582,8 @@ summaryPNL <- tableZCK %>%
     `PNL December Wheat` = PNL.y.y.y
   ) %>% 
   mutate(`Total PNL` = rowSums(select(., -`Partial Email`), na.rm = TRUE))
+
+write.csv(summaryPNL, file = "summaryPNL.csv")
 
 summaryPNL %>%
  knitr::kable("html", table.attr = "id='summaryPNL'") 

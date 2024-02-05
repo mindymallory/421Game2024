@@ -2,4 +2,168 @@
 title: "Expected Net Profit"
 ---
 
-Expected profit will be displayed here shortly
+```{r setup}
+#| include: false
+
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+
+library(tidyverse)
+library(googlesheets4)
+library(tidyr)
+library(kableExtra)
+library(hms)
+barchart_key <- Sys.getenv("BARCHART_Key")
+
+```
+
+
+```{r}
+###########
+# Get futures prices  
+# New Crop
+DATA1 <- read.csv(url(paste0("http://ondemand.websol.barchart.com/getHistory.csv?apikey=", barchart_key ,"&symbol=ZCZ24&type=daily&startDate=20190101"))) %>%
+  mutate(Date = as.Date(tradingDay)) %>% 
+  select(symbol, Date, close) %>%
+  mutate(symbol = substr(symbol, 1,2)) 
+
+DATA2 <- read.csv(url(paste0("http://ondemand.websol.barchart.com/getHistory.csv?apikey=", barchart_key ,"&symbol=ZSX24&type=daily&startDate=20190101"))) %>%
+  mutate(Date = as.Date(tradingDay)) %>% 
+  select(symbol, Date, close) %>%
+  mutate(symbol = substr(symbol, 1,2))
+
+DATA3 <- read.csv(url(paste0("http://ondemand.websol.barchart.com/getHistory.csv?apikey=", barchart_key ,"&symbol=ZWN24&type=daily&startDate=20190101"))) %>%
+  mutate(Date = as.Date(tradingDay)) %>% 
+  select(symbol, Date, close) %>%
+  mutate(symbol = substr(symbol, 1,2))
+
+DATA <- rbind(DATA1, DATA2, DATA3)
+
+DATANew <- DATA %>% mutate (closeSpot = case_when(symbol == "ZC" ~ close + (.05*exp(close/100 - 450/100) - 25/100)*100,
+                                       symbol == "ZS" ~ close + (.05*exp(close/100 - 1260/100) - 50/100)*100,
+                                       symbol == "ZW" ~ close + (.05*exp(close/100 - 600/100) - 25/100)*100))
+todayPricesNew <- DATANew %>% select(-closeSpot) %>% pivot_wider(names_from = symbol, values_from = close) %>% arrange(Date) %>% last()
+```
+
+## Futures Trades Profit and Loss
+
+```{r}
+# Futures trades PNL
+futuresPNL <- read.csv("summaryPNL.csv")
+futuresPNL %>% 
+  kable("html", escape = FALSE) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+```
+
+## Revenue from Spot and Forward Sales of 2023 Bushels and Forward Sales of 2024 Bushels
+
+```{r}
+# Spot/forward Sales revanue
+corn_spot_forward_Revenue <- read.csv("Corn_spotforward_sales.csv") %>% 
+  mutate(Cspot23 = X23.Corn.Spot.Sales*X23.Corn.Spot.Ave.Price,
+         Cforward23 = X23.Corn.Forward.Sales*X23.Corn.Forward.Ave.Price,
+         Cforward24 = X24.Corn.Forward.Sales*X24.Corn.Forward.Ave.Price) %>% 
+  select(c(2, 9:11))
+
+
+sobyean_spot_forward_Revenue <- read.csv("Soybean_spotforward_sales.csv") %>% 
+  mutate(Sspot23 = X23.Soybean.Spot.Sales*X23.Soybean.Spot.Ave.Price,
+         Sforward23 = X23.Soybean.Forward.Sales*X23.Soybean.Forward.Ave.Price,
+         Sforward24 = X24.Soybean.Forward.Sales*X24.Soybean.Forward.Ave.Price) %>% 
+  select(c(2, 9:11))
+
+wheat_spot_forward_Revenue <- read.csv("Wheat_forward_sales.csv") %>% 
+  mutate(Wforward24 = X24.Wheat.Forward.Sales*X24.Wheat.Forward.Ave.Price) %>% 
+  select(c(2, 5))
+
+
+# Revenue in dollars from 23 spot and forward sales, plus 24 forward contracts
+spot_forward_rev <- corn_spot_forward_Revenue %>% 
+  inner_join(sobyean_spot_forward_Revenue, by = "Partial.Email") %>% 
+  inner_join(wheat_spot_forward_Revenue, by = "Partial.Email")
+
+spot_forward_rev %>% 
+  kable("html", escape = FALSE) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+
+```
+
+
+
+```{r}
+## Expected Bushels Based on Acreage Choices for Different Crops and Practices
+# Acreage and Expected Yields
+expected_yields <- data.frame(cc = 208, rc = 221, rb = 67, w = 93, dcb = 47)
+
+# Gross expected bushels (separate off what has been contracted to multiply that remainder by expected spot at harvest)
+bushels <- read.csv("acreage.csv") %>% 
+  mutate(CCorn_Expected_Bushels = Continuous.Corn*expected_yields$cc,
+         RCorn_Expected_Bushels = Rotational.Corn*expected_yields$rc,
+         RSoybean_Expected_Bushels = Soybean*expected_yields$rb,
+         Wheat_Expected_Bushels = Wheat*expected_yields$w,
+         DSoybeans_Expected_Bushels = Double.Crop.Soybean*expected_yields$dcb) %>% 
+  select(c(3, 9:13))
+
+# bushels %>% 
+#   kable("html", escape = FALSE) %>%
+#   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+
+```
+
+## Revenue from New Crop Spot Sales (Expected Bushels - 2024 Forward Contracted Bushels)
+
+```{r}
+print("Latest New Crop Futures Prices")
+todayPricesNew
+
+# Calculate expected revenue from spot sales at 2024 harvest
+new_crop_spot <- bushels %>% inner_join( read.csv("Corn_spotforward_sales.csv") %>% select(c(2, 7)), by = "Partial.Email") %>% 
+  inner_join(read.csv("Soybean_spotforward_sales.csv") %>% select(2, 7), by = "Partial.Email") %>% 
+  inner_join( read.csv("Wheat_forward_sales.csv") %>% select(2,3), by = "Partial.Email") %>%
+  mutate(SpotCorn_Bushels = CCorn_Expected_Bushels + RCorn_Expected_Bushels - X24.Corn.Forward.Sales,
+         SpotSoy_Bushels = RSoybean_Expected_Bushels + DSoybeans_Expected_Bushels - X24.Soybean.Forward.Sales,
+         SpotWheat_Bushels = Wheat_Expected_Bushels - X24.Wheat.Forward.Sales) %>% 
+  select(c(1, 10:12)) %>% 
+  mutate(Exp_New_Corn_Rev = SpotCorn_Bushels*todayPricesNew$ZC/100,
+         Exp_New_Soy_Rev = SpotSoy_Bushels*todayPricesNew$ZS/100,
+         Exp_New_Wheat_Rev = SpotWheat_Bushels*todayPricesNew$ZW/100) %>% 
+  select(c(1, 5:7))
+
+new_crop_spot  %>% 
+  kable("html", escape = FALSE) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+
+```
+
+## Crop Insurance Indemnity Payment
+
+Coming soon
+
+```{r}
+
+```
+
+# Aggregating all Revenue Sources
+
+```{r}
+total <- futuresPNL %>% 
+  inner_join(spot_forward_rev, by = "Partial.Email") %>%
+  inner_join(new_crop_spot, by = "Partial.Email") %>% 
+  mutate(`Total PNL` = rowSums(select(., -"Partial.Email"), na.rm = TRUE))
+
+total %>%
+  select(c(2, 20)) %>% 
+  kable("html", escape = FALSE) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+
+```
+
+
+
+## Aggregate Revenue Detailed View 
+
+```{r}
+total %>%
+  kable("html", escape = FALSE) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+```
+

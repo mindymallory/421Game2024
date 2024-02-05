@@ -41,6 +41,8 @@ processed_data <- my_sheet %>%
       fill(names(my_sheet)[3:length(my_sheet)], .direction = "down") %>% 
       slice(n())   
 
+write.csv(processed_data, file = "acreage.csv")
+
 styled_table <- processed_data %>%
   kable("html", escape = FALSE) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
@@ -69,10 +71,14 @@ processed_data <- my_sheet %>%
       fill(names(my_sheet)[3:length(my_sheet)], .direction = "down") %>% 
       slice(n())   
 
+write.csv(processed_data, file = "ci_coverage_level.csv")
+
 styled_table <- processed_data %>%
   kable("html", escape = FALSE) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
 
 # Print the table (useful for a Quarto or R Markdown document)
+
+
 styled_table
 ```

@@ -163,6 +163,8 @@ df <- processed_data2 %>%
   mutate(`24 Corn Forward Ave Price` = round(`24 Corn Forward Sales Total Value`/`24 Corn Forward Sales`, 2) ) %>% 
   select(c(1:2, 8, 3, 9, 4, 10)) 
 
+write.csv(df, file = "Corn_spotforward_sales.csv")
+
 kable_df <- df %>% 
   kable("html", escape = FALSE) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
@@ -223,6 +225,8 @@ df <- processed_data2 %>%
   mutate(`24 Soybean Forward Ave Price` = round(`24 Soybean Forward Sales Total Value`/`24 Soybean Forward Sales`, 2) ) %>% 
   select(c(1:2, 8, 3, 9, 4, 10)) 
 
+write.csv(df, file = "Soybean_spotforward_sales.csv")
+
 kable_df <- df %>% 
   kable("html", escape = FALSE) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
@@ -267,6 +271,8 @@ df <- processed_data2 %>%
   mutate(`24 Wheat Forward Ave Price` = round(`24 Wheat Forward Sales Total Value`/`24 Wheat Forward Sales`, 2) ) %>% 
   select(c(1:2, 4)) 
 
+write.csv(df, file = "Wheat_forward_sales.csv")
+
 kable_df <- df %>% 
   kable("html", escape = FALSE) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
@@ -278,6 +284,9 @@ for(i in 1:nrow(df)){
       row_spec(i, background = "red") 
   }
 }
+
+
+
 kable_df
 ```
 
