@@ -54,6 +54,8 @@ DATANew <- DATA %>% mutate (closeSpot = case_when(symbol == "ZC" ~ close + (.05*
 todayPricesNew <- DATANew %>% select(-closeSpot) %>% pivot_wider(names_from = symbol, values_from = close) %>% arrange(Date) %>% last()
 ```
 
+# Components of Total Revenue
+
 ## Futures Trades Profit and Loss
 
 ```{r}
