@@ -46,7 +46,7 @@
     "href": "spot.html#indivdual-spot-and-forward-sales",
     "title": "Spot Sales and Forward Contracts",
     "section": "Indivdual Spot and Forward Sales",
-    "text": "Indivdual Spot and Forward Sales\n\n\n\n\n\n\nTimestamp\nPartial Email\n23 Corn Spot Sales\n23 Corn Forward Sales\n24 Corn Forward Sales\n23 Soybean Spot Sales\n23 Soybean Forward Sales\n24 Soybean Forward Sales\n24 Wheat Forward Sales\n\n\n\n\n2024-01-29 14:05:29\nebar\nNA\nNA\nNA\nNA\nNA\nNA\nNA\n\n\n2024-01-31 12:41:05\nlble\nNA\nNA\nNA\nNA\nNA\nNA\nNA\n\n\n2024-02-08 14:16:04\nmeye\nNA\nNA\nNA\nNA\nNA\nNA\nNA\n\n\n2024-01-31 12:45:17\nshum\n2000\n0\n1000\n1000\n0\n0\n0\n\n\n\n\n\n\n\n\nTake out ‘extra’ 23 soybean spot column.\nRemove forward contract 2023 wheat. No carryover bushels of 23 wheat."
+    "text": "Indivdual Spot and Forward Sales\n\n\n\n\n\n\nTimestamp\nPartial Email\n23 Corn Spot Sales\n23 Corn Forward Sales\n24 Corn Forward Sales\n23 Soybean Spot Sales\n23 Soybean Forward Sales\n24 Soybean Forward Sales\n24 Wheat Forward Sales\n\n\n\n\n2024-01-29 14:05:29\nebar\nNA\nNA\nNA\nNA\nNA\nNA\nNA\n\n\n2024-02-09 16:16:37\nebar\nNA\nNA\nNA\nNA\nNA\nNA\nNA\n\n\n2024-01-31 12:41:05\nlble\nNA\nNA\nNA\nNA\nNA\nNA\nNA\n\n\n2024-02-08 14:16:04\nmeye\nNA\nNA\nNA\nNA\nNA\nNA\nNA\n\n\n2024-01-31 12:45:17\nshum\n2000\n0\n1000\n1000\n0\n0\n0\n\n\n\n\n\n\n\n\nTake out ‘extra’ 23 soybean spot column.\nRemove forward contract 2023 wheat. No carryover bushels of 23 wheat."
   },
   {
     "objectID": "Prices.html",
@@ -74,84 +74,84 @@
     "href": "futures.html#all-trades-in-may-corn",
     "title": "Futures Trades",
     "section": "All Trades in May Corn",
-    "text": "All Trades in May Corn\n\n\n\n\n\nPartial Email\nDate\nK Corn Trade in Bushels\nPrice of Trade in K Corn\n\n\n\n\nebar\n2024-01-29\n0\n450.5\n\n\nlble\n2024-01-31\n0\n458.5\n\n\nmeye\n2024-02-08\n1000\n445.0\n\n\nshum\n2024-01-31\n2000\n458.5"
+    "text": "All Trades in May Corn\n\n\n\n\n\nPartial Email\nDate\nK Corn Trade in Bushels\nPrice of Trade in K Corn\n\n\n\n\nebar\n2024-01-29\n0\n450.5\n\n\nebar\n2024-02-12\n0\n0.0\n\n\nlble\n2024-01-31\n0\n458.5\n\n\nmeye\n2024-02-08\n1000\n445.0\n\n\nshum\n2024-01-31\n2000\n458.5"
   },
   {
     "objectID": "futures.html#net-profitloss-in-may-corn",
     "href": "futures.html#net-profitloss-in-may-corn",
     "title": "Futures Trades",
     "section": "Net Profit/Loss in May Corn",
-    "text": "Net Profit/Loss in May Corn\nThis number includes both closed trades and open trades. Open positions are found in the Net Position column. Net Position is in bushels, PNL is in dollars.\n\n\n\n\n\nPartial Email\nNet Position\nPNL\nCurrent Price K Corn\n\n\n\n\nebar\n0\n0\n445\n\n\nlble\n0\n0\n445\n\n\nmeye\n1000\n0\n445\n\n\nshum\n2000\n-270\n445"
+    "text": "Net Profit/Loss in May Corn\nThis number includes both closed trades and open trades. Open positions are found in the Net Position column. Net Position is in bushels, PNL is in dollars.\n\n\n\n\n\nPartial Email\nNet Position\nPNL\nCurrent Price K Corn\n\n\n\n\nebar\n0\n0\n441.5\n\n\nlble\n0\n0\n441.5\n\n\nmeye\n1000\n-35\n441.5\n\n\nshum\n2000\n-340\n441.5"
   },
   {
     "objectID": "futures.html#all-trades-in-dec-corn",
     "href": "futures.html#all-trades-in-dec-corn",
     "title": "Futures Trades",
     "section": "All Trades in Dec Corn",
-    "text": "All Trades in Dec Corn\n\n\n\n\n\nPartial Email\nDate\nZ Corn Trade in Bushels\nPrice of Trade in Z Corn\n\n\n\n\nebar\n2024-01-29\n0\n474.50\n\n\nlble\n2024-01-31\n2000\n480.00\n\n\nmeye\n2024-02-08\n0\n472.25\n\n\nshum\n2024-01-31\n2000\n480.00"
+    "text": "All Trades in Dec Corn\n\n\n\n\n\nPartial Email\nDate\nZ Corn Trade in Bushels\nPrice of Trade in Z Corn\n\n\n\n\nebar\n2024-01-29\n0\n474.50\n\n\nebar\n2024-02-12\n0\n0.00\n\n\nlble\n2024-01-31\n2000\n480.00\n\n\nmeye\n2024-02-08\n0\n472.25\n\n\nshum\n2024-01-31\n2000\n480.00"
   },
   {
     "objectID": "futures.html#net-profitloss-in-december-corn",
     "href": "futures.html#net-profitloss-in-december-corn",
     "title": "Futures Trades",
     "section": "Net Profit/Loss in December Corn",
-    "text": "Net Profit/Loss in December Corn\nThis number includes both closed trades and open trades. Open positions are found in the Net Position column. Net Position is in bushels, PNL is in dollars.\n\n\n\n\n\nPartial Email\nNet Position\nPNL\nCurrent Price Z Corn\n\n\n\n\nebar\n0\n0\n472.25\n\n\nlble\n2000\n-155\n472.25\n\n\nmeye\n0\n0\n472.25\n\n\nshum\n2000\n-155\n472.25"
+    "text": "Net Profit/Loss in December Corn\nThis number includes both closed trades and open trades. Open positions are found in the Net Position column. Net Position is in bushels, PNL is in dollars.\n\n\n\n\n\nPartial Email\nNet Position\nPNL\nCurrent Price Z Corn\n\n\n\n\nebar\n0\n0\n468.25\n\n\nlble\n2000\n-235\n468.25\n\n\nmeye\n0\n0\n468.25\n\n\nshum\n2000\n-235\n468.25"
   },
   {
     "objectID": "futures.html#all-trades-in-may-soybeans",
     "href": "futures.html#all-trades-in-may-soybeans",
     "title": "Futures Trades",
     "section": "All Trades in May Soybeans",
-    "text": "All Trades in May Soybeans\n\n\n\n\n\nPartial Email\nDate\nK Soybean Trade in Bushels\nPrice of Trade in K Soybean\n\n\n\n\nebar\n2024-01-29\n25000\n1205.00\n\n\nlble\n2024-01-31\n0\n1232.75\n\n\nmeye\n2024-02-08\n0\n1199.75\n\n\nshum\n2024-01-31\n1000\n1232.75"
+    "text": "All Trades in May Soybeans\n\n\n\n\n\nPartial Email\nDate\nK Soybean Trade in Bushels\nPrice of Trade in K Soybean\n\n\n\n\nebar\n2024-01-29\n25000\n1205.00\n\n\nebar\n2024-02-12\n-25000\n0.00\n\n\nlble\n2024-01-31\n0\n1232.75\n\n\nmeye\n2024-02-08\n0\n1199.75\n\n\nshum\n2024-01-31\n1000\n1232.75"
   },
   {
     "objectID": "futures.html#net-profitloss-in-may-soybeans",
     "href": "futures.html#net-profitloss-in-may-soybeans",
     "title": "Futures Trades",
     "section": "Net Profit/Loss in May Soybeans",
-    "text": "Net Profit/Loss in May Soybeans\nThis number includes both closed trades and open trades. Open positions are found in the Net Position column. Net Position is in bushels, PNL is in dollars.\n\n\n\n\n\nPartial Email\nNet Position\nPNL\nCurrent Price K Sobyean\n\n\n\n\nebar\n25000\n-1312.5\n1199.75\n\n\nlble\n0\n0.0\n1199.75\n\n\nmeye\n0\n0.0\n1199.75\n\n\nshum\n1000\n-330.0\n1199.75"
+    "text": "Net Profit/Loss in May Soybeans\nThis number includes both closed trades and open trades. Open positions are found in the Net Position column. Net Position is in bushels, PNL is in dollars.\n\n\n\n\n\nPartial Email\nNet Position\nPNL\nCurrent Price K Sobyean\n\n\n\n\nebar\n0\n-301250.0\n1190\n\n\nlble\n0\n0.0\n1190\n\n\nmeye\n0\n0.0\n1190\n\n\nshum\n1000\n-427.5\n1190"
   },
   {
     "objectID": "futures.html#all-trades-in-december-soybeans",
     "href": "futures.html#all-trades-in-december-soybeans",
     "title": "Futures Trades",
     "section": "All Trades in December Soybeans",
-    "text": "All Trades in December Soybeans\n\n\n\n\n\nPartial Email\nDate\nX Soybean Trade in Bushels\nPrice of Trade in X Soybean\n\n\n\n\nebar\n2024-01-29\n0\n1180.25\n\n\nlble\n2024-01-31\n0\n1199.75\n\n\nmeye\n2024-02-08\n0\n1172.75\n\n\nshum\n2024-01-31\n-500\n1199.75"
+    "text": "All Trades in December Soybeans\n\n\n\n\n\nPartial Email\nDate\nX Soybean Trade in Bushels\nPrice of Trade in X Soybean\n\n\n\n\nebar\n2024-01-29\n0\n1180.25\n\n\nebar\n2024-02-12\n0\n0.00\n\n\nlble\n2024-01-31\n0\n1199.75\n\n\nmeye\n2024-02-08\n0\n1172.75\n\n\nshum\n2024-01-31\n-500\n1199.75"
   },
   {
     "objectID": "futures.html#net-profitloss-in-december-soybeans",
     "href": "futures.html#net-profitloss-in-december-soybeans",
     "title": "Futures Trades",
     "section": "Net Profit/Loss in December Soybeans",
-    "text": "Net Profit/Loss in December Soybeans\nThis number includes both closed trades and open trades. Open positions are found in the Net Position column. Net Position is in bushels, PNL is in dollars.\n\n\n\n\n\nPartial Email\nNet Position\nPNL\nCurrent Price X Sobyean\n\n\n\n\nebar\n0\n0\n1172.75\n\n\nlble\n0\n0\n1172.75\n\n\nmeye\n0\n0\n1172.75\n\n\nshum\n-500\n135\n1172.75"
+    "text": "Net Profit/Loss in December Soybeans\nThis number includes both closed trades and open trades. Open positions are found in the Net Position column. Net Position is in bushels, PNL is in dollars.\n\n\n\n\n\nPartial Email\nNet Position\nPNL\nCurrent Price X Sobyean\n\n\n\n\nebar\n0\n0\n1163.75\n\n\nlble\n0\n0\n1163.75\n\n\nmeye\n0\n0\n1163.75\n\n\nshum\n-500\n180\n1163.75"
   },
   {
     "objectID": "futures.html#all-trades-in-may-wheat",
     "href": "futures.html#all-trades-in-may-wheat",
     "title": "Futures Trades",
     "section": "All Trades in May Wheat",
-    "text": "All Trades in May Wheat\n\n\n\n\n\nPartial Email\nDate\nK Wheat Trade in Bushels\nPrice of Trade in K Wheat\n\n\n\n\nebar\n2024-01-29\n0\n603.75\n\n\nlble\n2024-01-31\n0\n605.25\n\n\nmeye\n2024-02-08\n0\n594.00\n\n\nshum\n2024-01-31\n0\n605.25"
+    "text": "All Trades in May Wheat\n\n\n\n\n\nPartial Email\nDate\nK Wheat Trade in Bushels\nPrice of Trade in K Wheat\n\n\n\n\nebar\n2024-01-29\n0\n603.75\n\n\nebar\n2024-02-12\n0\n0.00\n\n\nlble\n2024-01-31\n0\n605.25\n\n\nmeye\n2024-02-08\n0\n594.00\n\n\nshum\n2024-01-31\n0\n605.25"
   },
   {
     "objectID": "futures.html#net-profitloss-in-may-wheat",
     "href": "futures.html#net-profitloss-in-may-wheat",
     "title": "Futures Trades",
     "section": "Net Profit/Loss in May Wheat",
-    "text": "Net Profit/Loss in May Wheat\nThis number includes both closed trades and open trades. Open positions are found in the Net Position column. Net Position is in bushels, PNL is in dollars.\n\n\n\n\n\nPartial Email\nNet Position\nPNL\nCurrent Price K Wheat\n\n\n\n\nebar\n0\n0\n594\n\n\nlble\n0\n0\n594\n\n\nmeye\n0\n0\n594\n\n\nshum\n0\n0\n594"
+    "text": "Net Profit/Loss in May Wheat\nThis number includes both closed trades and open trades. Open positions are found in the Net Position column. Net Position is in bushels, PNL is in dollars.\n\n\n\n\n\nPartial Email\nNet Position\nPNL\nCurrent Price K Wheat\n\n\n\n\nebar\n0\n0\n599.25\n\n\nlble\n0\n0\n599.25\n\n\nmeye\n0\n0\n599.25\n\n\nshum\n0\n0\n599.25"
   },
   {
     "objectID": "futures.html#all-trades-in-december-wheat",
     "href": "futures.html#all-trades-in-december-wheat",
     "title": "Futures Trades",
     "section": "All Trades in December Wheat",
-    "text": "All Trades in December Wheat\n\n\n\n\n\nPartial Email\nDate\nZ Wheat Trade in Bushels\nPrice of Trade in Z Wheat\n\n\n\n\nebar\n2024-01-29\n0\n609.50\n\n\nlble\n2024-01-31\n0\n610.25\n\n\nmeye\n2024-02-08\n0\n597.25\n\n\nshum\n2024-01-31\n0\n610.25"
+    "text": "All Trades in December Wheat\n\n\n\n\n\nPartial Email\nDate\nZ Wheat Trade in Bushels\nPrice of Trade in Z Wheat\n\n\n\n\nebar\n2024-01-29\n0\n609.50\n\n\nebar\n2024-02-12\n0\n0.00\n\n\nlble\n2024-01-31\n0\n610.25\n\n\nmeye\n2024-02-08\n0\n597.25\n\n\nshum\n2024-01-31\n0\n610.25"
   },
   {
     "objectID": "futures.html#net-profitloss-in-december-wheat",
     "href": "futures.html#net-profitloss-in-december-wheat",
     "title": "Futures Trades",
     "section": "Net Profit/Loss in December Wheat",
-    "text": "Net Profit/Loss in December Wheat\nThis number includes both closed trades and open trades. Open positions are found in the Net Position column. Net Position is in bushels, PNL is in dollars.\n\n\n\n\n\nPartial Email\nNet Position\nPNL\nCurrent Price Z Wheat\n\n\n\n\nebar\n0\n0\n597.25\n\n\nlble\n0\n0\n597.25\n\n\nmeye\n0\n0\n597.25\n\n\nshum\n0\n0\n597.25"
+    "text": "Net Profit/Loss in December Wheat\nThis number includes both closed trades and open trades. Open positions are found in the Net Position column. Net Position is in bushels, PNL is in dollars.\n\n\n\n\n\nPartial Email\nNet Position\nPNL\nCurrent Price Z Wheat\n\n\n\n\nebar\n0\n0\n601\n\n\nlble\n0\n0\n601\n\n\nmeye\n0\n0\n601\n\n\nshum\n0\n0\n601"
   },
   {
     "objectID": "about.html",
@@ -172,14 +172,14 @@
     "href": "acreage.html#acreage-decisions",
     "title": "Acreage and Insurance Decisions",
     "section": "Acreage Decisions",
-    "text": "Acreage Decisions\n\n\n\n\n\n\nTimestamp\nPartial Email\nContinuous Corn\nRotational Corn\nSoybean\nWheat\nDouble Crop Soybean\n\n\n\n\n2024-01-29\nebar\nNA\nNA\nNA\nNA\nNA\n\n\n2024-01-31\nlble\nNA\nNA\nNA\nNA\nNA\n\n\n2024-02-08\nmeye\nNA\nNA\nNA\nNA\nNA\n\n\n2024-01-31\nshum\n0\n500\n500\n0\n0"
+    "text": "Acreage Decisions\n\n\n\n\n\n\nTimestamp\nPartial Email\nContinuous Corn\nRotational Corn\nSoybean\nWheat\nDouble Crop Soybean\n\n\n\n\n2024-02-09\nebar\nNA\nNA\nNA\nNA\nNA\n\n\n2024-01-31\nlble\nNA\nNA\nNA\nNA\nNA\n\n\n2024-02-08\nmeye\nNA\nNA\nNA\nNA\nNA\n\n\n2024-01-31\nshum\n0\n500\n500\n0\n0"
   },
   {
     "objectID": "acreage.html#percent-of-acres-insured",
     "href": "acreage.html#percent-of-acres-insured",
     "title": "Acreage and Insurance Decisions",
     "section": "Percent of Acres Insured",
-    "text": "Percent of Acres Insured\n\n\n\n\n\n\nTimestamp\nPartial Email\nContinuous Corn\nRotational Corn\nSoybean\nWheat\nDouble Crop Soybean\n\n\n\n\n2024-01-29\nebar\nNA\nNA\nNA\nNA\nNA\n\n\n2024-01-31\nlble\nNA\nNA\nNA\nNA\nNA\n\n\n2024-02-08\nmeye\nNA\nNA\nNA\nNA\nNA\n\n\n2024-01-31\nshum\n0\n80\n80\n0\n0"
+    "text": "Percent of Acres Insured\n\n\n\n\n\n\nTimestamp\nPartial Email\nContinuous Corn\nRotational Corn\nSoybean\nWheat\nDouble Crop Soybean\n\n\n\n\n2024-02-09\nebar\nNA\nNA\nNA\nNA\nNA\n\n\n2024-01-31\nlble\nNA\nNA\nNA\nNA\nNA\n\n\n2024-02-08\nmeye\nNA\nNA\nNA\nNA\nNA\n\n\n2024-01-31\nshum\n0\n80\n80\n0\n0"
   },
   {
     "objectID": "index.html",
@@ -214,21 +214,21 @@
     "href": "profit.html#futures-trades-profit-and-loss",
     "title": "Expected Net Profit",
     "section": "Futures Trades Profit and Loss",
-    "text": "Futures Trades Profit and Loss\n\n\n\n\n\nX\nPartial.Email\nPNL.May.Corn\nPNL.Dec.Corn\nPNL.May.Soybean\nPNL.November.Soybean\nPNL.May.Wheat\nPNL.December.Wheat\nTotal.PNL\n\n\n\n\n1\nebar\n0\n0\n-1,312\n0\n0\n0\n-1,312\n\n\n2\nlble\n0\n-155\n0\n0\n0\n0\n-155\n\n\n3\nmeye\n0\n0\n0\n0\n0\n0\n0\n\n\n4\nshum\n-270\n-155\n-330\n135\n0\n0\n-620"
+    "text": "Futures Trades Profit and Loss\n\n\n\n\n\nX\nPartial.Email\nPNL.May.Corn\nPNL.Dec.Corn\nPNL.May.Soybean\nPNL.November.Soybean\nPNL.May.Wheat\nPNL.December.Wheat\nTotal.PNL\n\n\n\n\n1\nebar\n0\n0\n-301,250\n0\n0\n0\n-301,250\n\n\n2\nlble\n0\n-235\n0\n0\n0\n0\n-235\n\n\n3\nmeye\n-35\n0\n0\n0\n0\n0\n-35\n\n\n4\nshum\n-340\n-235\n-428\n180\n0\n0\n-822"
   },
   {
     "objectID": "profit.html#revenue-from-spot-and-forward-sales-of-2023-bushels-and-forward-sales-of-2024-bushels",
     "href": "profit.html#revenue-from-spot-and-forward-sales-of-2023-bushels-and-forward-sales-of-2024-bushels",
     "title": "Expected Net Profit",
     "section": "Revenue from Spot and Forward Sales of 2023 Bushels and Forward Sales of 2024 Bushels",
-    "text": "Revenue from Spot and Forward Sales of 2023 Bushels and Forward Sales of 2024 Bushels\nFigures are rounded to nearest dollar.\n\n\n\n\n\nPartial.Email\nCspot23\nCforward23\nCforward24\nSspot23\nSforward23\nSforward24\nWforward24\n\n\n\n\nebar\nNA\nNA\nNA\nNA\nNA\nNA\nNA\n\n\nlble\nNA\nNA\nNA\nNA\nNA\nNA\nNA\n\n\nshum\n8,780\nNA\n4,620\n11,870\nNA\nNA\nNA"
+    "text": "Revenue from Spot and Forward Sales of 2023 Bushels and Forward Sales of 2024 Bushels\nFigures are rounded to nearest dollar.\n\n\n\n\n\nPartial.Email\nCspot23\nCforward23\nCforward24\nSspot23\nSforward23\nSforward24\nWforward24\n\n\n\n\nebar\nNA\nNA\nNA\nNA\nNA\nNA\nNA\n\n\nlble\nNA\nNA\nNA\nNA\nNA\nNA\nNA\n\n\nmeye\nNA\nNA\nNA\nNA\nNA\nNA\nNA\n\n\nshum\n8,780\nNA\n4,620\n11,870\nNA\nNA\nNA"
   },
   {
     "objectID": "profit.html#revenue-from-new-crop-spot-sales",
     "href": "profit.html#revenue-from-new-crop-spot-sales",
     "title": "Expected Net Profit",
     "section": "Revenue from New Crop Spot Sales",
-    "text": "Revenue from New Crop Spot Sales\n\nLatest New Crop Futures Prices\nThese are used to calculate expected revenue from spot sales at 2024 harvest.\n\n\n\n\n\nDate\nZC\nZS\nZW\n\n\n\n\n2024-02-08\n472.25\n1172.75\n597.25\n\n\n\n\n\n\n\n\n\nExpected Revenue for Spot Sales at 2024 Harvest\nExpected bushels available for spot sales at harvest are total expected bushels minus any bushels forward contracted. E.g., Expected Bushels - 2024 Forward Contracted Bushels. Then, this number is multiplied by the current new crop futures prices to get expected revenue from spot sales at 2024 harvest.\n\n\n\n\n\nPartial.Email\nExp_New_Corn_Rev\nExp_New_Soy_Rev\nExp_New_Wheat_Rev\n\n\n\n\nebar\nNA\nNA\nNA\n\n\nlble\nNA\nNA\nNA\n\n\nshum\n517,114\n392,871\n0"
+    "text": "Revenue from New Crop Spot Sales\n\nLatest New Crop Futures Prices\nThese are used to calculate expected revenue from spot sales at 2024 harvest.\n\n\n\n\n\nDate\nZC\nZS\nZW\n\n\n\n\n2024-02-09\n468.25\n1163.75\n601\n\n\n\n\n\n\n\n\n\nExpected Revenue for Spot Sales at 2024 Harvest\nExpected bushels available for spot sales at harvest are total expected bushels minus any bushels forward contracted. E.g., Expected Bushels - 2024 Forward Contracted Bushels. Then, this number is multiplied by the current new crop futures prices to get expected revenue from spot sales at 2024 harvest.\n\n\n\n\n\nPartial.Email\nExp_New_Corn_Rev\nExp_New_Soy_Rev\nExp_New_Wheat_Rev\n\n\n\n\nebar\nNA\nNA\nNA\n\n\nlble\nNA\nNA\nNA\n\n\nmeye\nNA\nNA\nNA\n\n\nshum\n512,734\n389,856\n0"
   },
   {
     "objectID": "profit.html#crop-insurance-indemnity-payment",
@@ -242,6 +242,6 @@
     "href": "profit.html#aggregate-revenue-detailed-view",
     "title": "Expected Net Profit",
     "section": "Aggregate Revenue Detailed View",
-    "text": "Aggregate Revenue Detailed View\n\n\n\n\n\nX\nPartial.Email\nPNL.May.Corn\nPNL.Dec.Corn\nPNL.May.Soybean\nPNL.November.Soybean\nPNL.May.Wheat\nPNL.December.Wheat\nTotal.PNL\nCspot23\nCforward23\nCforward24\nSspot23\nSforward23\nSforward24\nWforward24\nExp_New_Corn_Rev\nExp_New_Soy_Rev\nExp_New_Wheat_Rev\nTotal PNL\n\n\n\n\n1\nebar\n0\n0\n-1,312\n0\n0\n0\n-1,312\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\n-2,624\n\n\n2\nlble\n0\n-155\n0\n0\n0\n0\n-155\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\n-308\n\n\n4\nshum\n-270\n-155\n-330\n135\n0\n0\n-620\n8,780\nNA\n4,620\n11,870\nNA\nNA\nNA\n517,114\n392,871\n0\n934,019"
+    "text": "Aggregate Revenue Detailed View\n\n\n\n\n\nX\nPartial.Email\nPNL.May.Corn\nPNL.Dec.Corn\nPNL.May.Soybean\nPNL.November.Soybean\nPNL.May.Wheat\nPNL.December.Wheat\nTotal.PNL\nCspot23\nCforward23\nCforward24\nSspot23\nSforward23\nSforward24\nWforward24\nExp_New_Corn_Rev\nExp_New_Soy_Rev\nExp_New_Wheat_Rev\nTotal PNL\n\n\n\n\n1\nebar\n0\n0\n-301,250\n0\n0\n0\n-301,250\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\n-602,499\n\n\n2\nlble\n0\n-235\n0\n0\n0\n0\n-235\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\n-468\n\n\n3\nmeye\n-35\n0\n0\n0\n0\n0\n-35\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\n-67\n\n\n4\nshum\n-340\n-235\n-428\n180\n0\n0\n-822\n8,780\nNA\n4,620\n11,870\nNA\nNA\nNA\n512,734\n389,856\n0\n926,219"
   }
 ]
