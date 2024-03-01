@@ -1,9 +1,14 @@
 "","Timestamp","Partial Email","Continuous Corn","Rotational Corn","Soybean","Wheat","Double Crop Soybean"
-"1",2024-02-25,"csal",NA,NA,NA,NA,NA
-"2",2024-02-09,"ebar",NA,NA,NA,NA,NA
-"3",2024-02-23,"elki",NA,500,500,NA,NA
-"4",2024-02-28,"havr",100,500,400,NA,NA
-"5",2024-02-23,"lble",NA,NA,NA,NA,NA
-"6",2024-02-08,"meye",NA,NA,NA,NA,NA
-"7",2024-01-31,"shum",0,500,500,0,0
-"8",2024-02-12,"tgba",NA,450,450,100,NA
+"1",2024-02-28,"asto",250,NA,NA,NA,NA
+"2",2024-02-28,"berg",50,500,450,0,0
+"3",2024-02-28,"cmeh",200,400,400,NA,NA
+"4",2024-02-25,"csal",NA,NA,NA,NA,NA
+"5",2024-02-09,"ebar",NA,NA,NA,NA,NA
+"6",2024-02-28,"elki",NA,500,500,NA,NA
+"7",2024-02-28,"havr",100,500,400,NA,NA
+"8",2024-02-23,"lble",NA,NA,NA,NA,NA
+"9",2024-02-08,"meye",NA,NA,NA,NA,NA
+"10",2024-02-28,"rusc",200,400,400,NA,NA
+"11",2024-01-31,"shum",0,500,500,0,0
+"12",2024-02-12,"tgba",NA,450,450,100,NA
+"13",2024-03-01,"west",300,400,300,0,0
