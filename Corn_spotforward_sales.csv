@@ -1,5 +1,5 @@
 "","Partial Email","23 Corn Spot Sales","23 Corn Spot Ave Price","23 Corn Forward Sales","23 Corn Forward Ave Price","24 Corn Forward Sales","24 Corn Forward Ave Price"
-"1","asto",0,NA,0,NA,0,NA
+"1","asto",500,4.05,500,4.05,500,4.4
 "2","berg",0,NA,0,NA,0,NA
 "3","cmeh",0,NA,0,NA,0,NA
 "4","csal",0,NA,0,NA,0,NA
@@ -7,8 +7,9 @@
 "6","elki",0,NA,0,NA,0,NA
 "7","havr",0,NA,0,NA,0,NA
 "8","lble",0,NA,0,NA,0,NA
-"9","meye",0,NA,0,NA,0,NA
-"10","rusc",0,NA,0,NA,0,NA
-"11","shum",2000,4.39,0,NA,1000,4.62
-"12","tgba",0,NA,0,NA,0,NA
-"13","west",0,NA,0,NA,0,NA
+"9","mbag",0,NA,0,NA,0,NA
+"10","meye",0,NA,0,NA,0,NA
+"11","rusc",0,NA,0,NA,0,NA
+"12","shum",2000,4.39,0,NA,1000,4.62
+"13","tgba",0,NA,0,NA,0,NA
+"14","west",0,NA,0,NA,0,NA
