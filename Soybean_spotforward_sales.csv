@@ -1,11 +1,11 @@
 "","Partial Email","23 Soybean Spot Sales","23 Soybean Spot Ave Price","23 Soybean Forward Sales","23 Soybean Forward Ave Price","24 Soybean Forward Sales","24 Soybean Forward Ave Price"
 "1","asto",500,11.01,900,11,500,10.96
 "2","berg",0,NA,0,NA,0,NA
-"3","clde",0,NA,0,NA,0,NA
+"3","clde",500,NA,0,NA,0,NA
 "4","cmeh",0,NA,0,NA,0,NA
 "5","csal",0,NA,0,NA,0,NA
 "6","culp",1300,11.36,1500,11.36,1600,11.26
-"7","dahi",625,11.36,0,NA,625,11.26
+"7","dahi",625,NA,0,NA,625,NA
 "8","ebar",0,NA,0,NA,0,NA
 "9","elki",0,NA,0,NA,0,NA
 "10","ewer",0,NA,0,NA,0,NA
