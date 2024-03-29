@@ -35,7 +35,7 @@ colnames(my_sheet)[3:7] <- new_column_names
 processed_data <- my_sheet %>%
   mutate(Timestamp = as.Date(Timestamp, format = "%m/%d/%Y")) %>%
   
-  filter(Timestamp <= as.Date("2024-03-15")) %>%
+  filter(Timestamp <= as.Date("2024-04-01")) %>%
   group_by(`Partial Email`) %>%  # Assuming Email Address as the unique identifier
   
       fill(names(my_sheet)[3:length(my_sheet)], .direction = "down") %>% 
