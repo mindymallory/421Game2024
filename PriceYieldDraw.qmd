@@ -1,0 +1,127 @@
+---
+title: "Price Yield Draw"
+---
+
+```{r}
+library(tidyverse)
+library(broom)
+library(plotly)
+data <- read.csv("PriceYieldDraw.csv") %>% select(c(1:6))
+data
+```
+
+Couple of Issues: 
+
+1. Will only use observations 2007- because era of biofuels brought new price levels, so price/yield correlations are only valid more recently. 
+
+2. Stocks/Use last year sets the stage for what price impact current yield will have on price, but it is a bit hard to simply incorporate both prior stocks-to-use and yield realization, so we will not incorporate prior stocks-to-use. If we had enough data, we could model it, but not enough data since 2007  
+
+```{r}
+data %>% 
+  group_by(Commodity) %>% 
+  ggplot(aes(x = lag(StockUse), 
+             y = Price, 
+             color = CurrentYear)) + 
+  geom_point() + 
+  facet_wrap('Commodity')
+```
+
+2. Yield is trending up with time so we need to 'up-trend' old yield data
+
+```{r}
+data %>% 
+  group_by(Commodity) %>% 
+  ggplot(aes(x = Year, 
+             y = Yield, 
+             color = CurrentYear)) + 
+  geom_point() + 
+  facet_wrap('Commodity') +
+  geom_smooth(method = "lm", se = FALSE) 
+
+data <- data %>%
+  group_by(Commodity) %>%
+  do(augment(lm(Yield ~ Year, data = .), .)) %>%
+  ungroup() 
+
+data <- data %>% 
+  select(-c(8:12)) %>% 
+  mutate(YieldPercDeviation = (Yield - .fitted)/.fitted)
+
+data %>% ggplot(aes(x = Year, y = YieldPercDeviation, color = CurrentYear)) + geom_point() + facet_wrap("Commodity")
+
+data %>% ggplot(aes(x = YieldPercDeviation, y = Price, color = CurrentYear)) + geom_point() + facet_wrap("Commodity")
+
+corn <- data %>% filter(Commodity == "Corn")
+soy <- data %>% filter(Commodity == "Soybean")
+wheat <- data %>% filter(Commodity == "Wheat")
+  
+df <- bind_cols(corn, soy, wheat)  
+
+df %>%  ggplot(aes(x = YieldPercDeviation...8, y = YieldPercDeviation...16)) + 
+  geom_point() + 
+  labs(x = 'Yield Percent Deviation Corn', y = 'Yield Percent Deviation Soybean')
+
+df %>%  ggplot(aes(x = YieldPercDeviation...8, y = YieldPercDeviation...24)) + 
+  geom_point() + 
+  labs(x = 'Yield Percent Deviation Corn', y = 'Yield Percent Deviation Wheat')
+```
+
+
+We will take a random draw of a year. Then game yield and price will be based on a draw from a kernel density around that years corn/soybean/wheat yield and price. 
+
+```{r}
+data %>% filter(Year == 2015)
+
+data %>% ggplot(aes(x = YieldPercDeviation)) + geom_histogram() + facet_wrap("Commodity")
+data %>% ggplot(aes(x = Price)) + geom_histogram() + facet_wrap("Commodity")
+```
+
+Estimate the kernel densities
+
+```{r}
+df <- data %>% 
+  select(Year, Commodity, YieldPercDeviation, Price) %>% 
+  pivot_wider(names_from = Commodity, values_from = -c(Year, Commodity))
+
+# Estimate the kernel density for the 'Price' column
+kdc <- density(df$Price_Corn)
+kds <- density(df$Price_Soybean)
+kdw <- density(df$Price_Wheat)
+# Use the bandwidth of the kernel density as the standard deviation for the Gaussian noise
+sd_c <- kdc$bw
+sd_s <- kds$bw
+sd_w <- kdw$bw
+
+kdyc <- density(df$YieldPercDeviation_Corn)
+kdys <- density(df$YieldPercDeviation_Soybean)
+kdyw <- density(df$YieldPercDeviation_Wheat)
+# Use the bandwidth of the kernel density as the standard deviation for the Gaussian noise
+sdy_c <- kdyc$bw
+sdy_s <- kdys$bw
+sdy_w <- kdyw$bw
+
+```
+
+Add random perturbation to the 'Price' and 'YieldPercDeviation' columns based on the kernel density
+
+```{r}
+
+
+ndraws <- 10000
+yeardraws <- sample_n(df, ndraws, replace = TRUE) %>%
+  mutate(Price_Corn = Price_Corn + rnorm(n(), mean = 0, sd = sd_c),
+         Price_Soybean = Price_Soybean + rnorm(n(), mean = 0, sd = sd_s),
+         Price_Wheat = Price_Wheat + rnorm(n(), mean = 0, sd = sd_w),
+         YieldPercDeviation_Corn = YieldPercDeviation_Corn + rnorm(n(), mean = 0, sd = sdy_c),
+         YieldPercDeviation_Soybean = YieldPercDeviation_Soybean + rnorm(n(), mean = 0, sd = sdy_s),
+         YieldPercDeviation_Wheat = YieldPercDeviation_Wheat + rnorm(n(), mean = 0, sd = sdy_w)) %>% 
+  mutate(Yield_Corn = 179.33*(1+YieldPercDeviation_Corn),
+         Yield_Soybean = 52.37*(1+YieldPercDeviation_Soybean),
+         Yield_Wheat = 49.01*(1 + YieldPercDeviation_Wheat))
+
+yeardraws %>% filter(Year == 2012) %>% 
+  ggplot(aes(x = Yield_Corn, y = Price_Corn)) + geom_point()
+
+yeardraws
+```
+
