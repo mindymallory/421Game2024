@@ -107,7 +107,7 @@ Add random perturbation to the 'Price' and 'YieldPercDeviation' columns based on
 ```{r}
 
 
-ndraws <- 10000
+ndraws <- 1
 yeardraws <- sample_n(df, ndraws, replace = TRUE) %>%
   mutate(Price_Corn = Price_Corn + rnorm(n(), mean = 0, sd = sd_c),
          Price_Soybean = Price_Soybean + rnorm(n(), mean = 0, sd = sd_s),
@@ -115,13 +115,13 @@ yeardraws <- sample_n(df, ndraws, replace = TRUE) %>%
          YieldPercDeviation_Corn = YieldPercDeviation_Corn + rnorm(n(), mean = 0, sd = sdy_c),
          YieldPercDeviation_Soybean = YieldPercDeviation_Soybean + rnorm(n(), mean = 0, sd = sdy_s),
          YieldPercDeviation_Wheat = YieldPercDeviation_Wheat + rnorm(n(), mean = 0, sd = sdy_w)) %>% 
-  mutate(Yield_Corn = 179.33*(1+YieldPercDeviation_Corn),
-         Yield_Soybean = 52.37*(1+YieldPercDeviation_Soybean),
-         Yield_Wheat = 49.01*(1 + YieldPercDeviation_Wheat))
+  mutate(Yield_Corn = 179*(1+YieldPercDeviation_Corn),
+         Yield_Soybean = 58*(1+YieldPercDeviation_Soybean),
+         Yield_DCSoybean = 41*(1+YieldPercDeviation_Soybean),
+         Yield_Wheat = 80*(1 + YieldPercDeviation_Wheat))
 
-yeardraws %>% filter(Year == 2012) %>% 
-  ggplot(aes(x = Yield_Corn, y = Price_Corn)) + geom_point()
-
+# After drawing outcome in game, comment next line to fix outcome for building final profit page
+#yeardraws %>% write.csv(file = 'game_draw.csv')
 yeardraws
 ```
 

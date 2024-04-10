@@ -2,8 +2,6 @@
 title: "Spot Sales and Forward Contracts"
 ---
 
-## This page is still under construction
-
 <https://forms.gle/PscmhTrE13roMsw37>
 
 ```{r setup}
@@ -75,6 +73,24 @@ my_sheet <- read_sheet("1y1Kv8qzbVwlKQoZNc7k4EiYykN7U55ORQll7hOlcA9k") %>%
   select(c(1,2, 8, 10, 11, 13, 16, 17, 20, 21, 27)) %>% 
   select(c(-9, -11))  #removes 23 wheat forward contract since no 23 bushels, removes (11) sell 23 soybrean spot. think this was an initial question that got replaced by (5) 
 
+# If trade before the close you get same day close price. If after the close, you get next day close price. 
+my_sheet <- my_sheet %>%
+  rowwise() %>%
+  mutate(
+    Date = case_when(
+      wday(Timestamp) %in% 2:6 & (hour(Timestamp) < 14 || (hour(Timestamp) == 14 && minute(Timestamp) < 20)) ~ as.Date(Timestamp),
+      wday(Timestamp) %in% 2:6 & (hour(Timestamp) > 14 || (hour(Timestamp) == 14 && minute(Timestamp) >= 20)) ~ as.Date(Timestamp) + days(1))) %>%
+  mutate(Date = case_when(wday(Date) == 1 ~ as.Date(Date) + days(1),  # From Sunday to Monday
+      wday(Date) == 7 ~ as.Date(Date) + days(2),   # From Saturday to Monday
+      TRUE ~ as.Date(Date)
+    )) #%>% 
+    # mutate(Date = case_when(Date == as.Date("2024-03-29") ~ as.Date(Timestamp) + days(3),
+    #                         Date == as.Date("2024-03-31") ~ as.Date(Timestamp) + days(1),
+    #                         #Timestamp == as.Date("2024-03-28") ~ as.Date(Timestamp) + days(4),
+    #                         #Date == '<NA>' ~ as.Date(Timestamp) + days(1),
+    #                         Date == as.Date("2024-03-10") ~ as.Date(Timestamp) + days(1),
+    #                         TRUE ~ as.Date(Date))) # Good friday gets pushed to monday for a price
+  
 
 processed_data <- my_sheet 
 
@@ -85,16 +101,15 @@ new_column_names <-  c("23 Corn Spot Sales",
                        "23 Soybean Forward Sales",
                        "24 Soybean Forward Sales",
                        "24 Wheat Forward Sales")
-colnames(processed_data)[3:11] <- new_column_names
+colnames(processed_data)[3:9] <- new_column_names
 
 ```
-
 
 ```{r}
 
 
-processed_data <- processed_data %>%
-  mutate(Date = as.Date(Timestamp))  
+processed_data <- processed_data #%>%
+  #mutate(Date = as.Date(Timestamp))  
 
 processed_data2 <- left_join(processed_data,  
           DATAK %>% select(-close) %>% pivot_wider(names_from = symbol, values_from = closeSpot), 
@@ -107,19 +122,14 @@ processed_data2 <- left_join(processed_data,
           by =  "Date") %>% 
   group_by(`Partial Email`) 
   
-
+#processed_data2 %>% filter(ZC.x == NA)
 ```
 
 ## Take Note!
 
-If your row is highlighted in red, it means you tried to sell more 2023 bushels than you have stored, so your later sales that put you over 2023 bushels will be deleted soon. 
-
-
+If your row is highlighted in red, it means you tried to sell more 2023 bushels than you have stored, so your later sales that put you over 2023 bushels will be deleted soon.
 
 ## Corn Total Spot, Forward Sales, and Average Price
-
-
-
 
 ```{r}
 
@@ -181,8 +191,6 @@ kable_df
 ```
 
 ## Soybean Total Spot, Forward Sales, and Average Price
-
-
 
 ```{r}
 df <- processed_data2 %>% 
@@ -290,7 +298,6 @@ for(i in 1:nrow(df)){
 kable_df
 ```
 
-
 ## Indivdual Spot and Forward Sales
 
 ```{r}
@@ -308,6 +315,8 @@ styled_table
 
 ```
 
-Take out 'extra' 23 soybean spot column.
+```{r}
+#Take out 'extra' 23 soybean spot column.
 
-Remove forward contract 2023 wheat. No carryover bushels of 23 wheat.
+#Remove forward contract 2023 wheat. No carryover bushels of 23 wheat.
+```

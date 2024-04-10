@@ -417,7 +417,7 @@ The following object is masked from 'package:graphics':
 </div>
 <p>Add random perturbation to the ‘Price’ and ‘YieldPercDeviation’ columns based on the kernel density</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>ndraws <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>ndraws <span class="ot">&lt;-</span> <span class="dv">1</span></span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>yeardraws <span class="ot">&lt;-</span> <span class="fu">sample_n</span>(df, ndraws, <span class="at">replace =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Price_Corn =</span> Price_Corn <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">n</span>(), <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sd_c),</span>
 <span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">Price_Soybean =</span> Price_Soybean <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">n</span>(), <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sd_s),</span>
@@ -425,34 +425,23 @@ The following object is masked from 'package:graphics':
 <span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">YieldPercDeviation_Corn =</span> YieldPercDeviation_Corn <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">n</span>(), <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sdy_c),</span>
 <span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">YieldPercDeviation_Soybean =</span> YieldPercDeviation_Soybean <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">n</span>(), <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sdy_s),</span>
 <span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">YieldPercDeviation_Wheat =</span> YieldPercDeviation_Wheat <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">n</span>(), <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sdy_w)) <span class="sc">%&gt;%</span> </span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Yield_Corn =</span> <span class="fl">179.33</span><span class="sc">*</span>(<span class="dv">1</span><span class="sc">+</span>YieldPercDeviation_Corn),</span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">Yield_Soybean =</span> <span class="fl">52.37</span><span class="sc">*</span>(<span class="dv">1</span><span class="sc">+</span>YieldPercDeviation_Soybean),</span>
-<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>         <span class="at">Yield_Wheat =</span> <span class="fl">49.01</span><span class="sc">*</span>(<span class="dv">1</span> <span class="sc">+</span> YieldPercDeviation_Wheat))</span>
-<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>yeardraws <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Year <span class="sc">==</span> <span class="dv">2012</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Yield_Corn, <span class="at">y =</span> Price_Corn)) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="PriceYieldDraw_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
-</div>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>yeardraws</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Yield_Corn =</span> <span class="dv">179</span><span class="sc">*</span>(<span class="dv">1</span><span class="sc">+</span>YieldPercDeviation_Corn),</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">Yield_Soybean =</span> <span class="dv">58</span><span class="sc">*</span>(<span class="dv">1</span><span class="sc">+</span>YieldPercDeviation_Soybean),</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>         <span class="at">Yield_DCSoybean =</span> <span class="dv">41</span><span class="sc">*</span>(<span class="dv">1</span><span class="sc">+</span>YieldPercDeviation_Soybean),</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">Yield_Wheat =</span> <span class="dv">80</span><span class="sc">*</span>(<span class="dv">1</span> <span class="sc">+</span> YieldPercDeviation_Wheat))</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="co"># After drawing outcome in game, comment next line to fix outcome for building final profit page</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a><span class="co">#yeardraws %&gt;% write.csv(file = 'game_draw.csv')</span></span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>yeardraws</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 10,000 × 10
-    Year YieldPercDeviation_Corn YieldPercDeviation_Soy…¹ YieldPercDeviation_W…²
-   &lt;int&gt;                   &lt;dbl&gt;                    &lt;dbl&gt;                  &lt;dbl&gt;
- 1  2012               -0.177                     -0.117                 0.00603
- 2  2008                0.0489                    -0.0164                0.0398 
- 3  2009                0.0855                     0.0588               -0.0183 
- 4  2018                0.000148                   0.0638                0.00346
- 5  2013               -0.0157                    -0.0143               -0.0159 
- 6  2012               -0.221                     -0.108                 0.0310 
- 7  2009                0.103                      0.0421               -0.0150 
- 8  2022               -0.0575                    -0.0611               -0.0430 
- 9  2012               -0.209                     -0.115                 0.0205 
-10  2016                0.0400                     0.101                 0.0512 
-# ℹ 9,990 more rows
+<pre><code># A tibble: 1 × 11
+   Year YieldPercDeviation_Corn YieldPercDeviation_Soyb…¹ YieldPercDeviation_W…²
+  &lt;int&gt;                   &lt;dbl&gt;                     &lt;dbl&gt;                  &lt;dbl&gt;
+1  2014                  0.0405                    0.0589                -0.0538
 # ℹ abbreviated names: ¹​YieldPercDeviation_Soybean, ²​YieldPercDeviation_Wheat
-# ℹ 6 more variables: Price_Corn &lt;dbl&gt;, Price_Soybean &lt;dbl&gt;, Price_Wheat &lt;dbl&gt;,
-#   Yield_Corn &lt;dbl&gt;, Yield_Soybean &lt;dbl&gt;, Yield_Wheat &lt;dbl&gt;</code></pre>
+# ℹ 7 more variables: Price_Corn &lt;dbl&gt;, Price_Soybean &lt;dbl&gt;, Price_Wheat &lt;dbl&gt;,
+#   Yield_Corn &lt;dbl&gt;, Yield_Soybean &lt;dbl&gt;, Yield_DCSoybean &lt;dbl&gt;,
+#   Yield_Wheat &lt;dbl&gt;</code></pre>
 </div>
 </div>
 

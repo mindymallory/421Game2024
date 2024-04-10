@@ -15,8 +15,9 @@ library(hms)
 library(scales)
 barchart_key <- Sys.getenv("BARCHART_Key")
 
-```
+# Make sure all expected bushels and expected prices are are set right during game versus close game. 
 
+```
 
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
 
@@ -26,7 +27,6 @@ barchart_key <- Sys.getenv("BARCHART_Key")
 ```{=html}
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
 ```
-
 ```{r}
 ###########
 # Get futures prices  
@@ -54,6 +54,23 @@ DATANew <- DATA %>% mutate (closeSpot = case_when(symbol == "ZC" ~ close + (.05*
 todayPricesNew <- DATANew %>% select(-closeSpot) %>% pivot_wider(names_from = symbol, values_from = close) %>% arrange(Date) %>% last()
 ```
 
+# Game Closed!
+
+### Latest New Crop Futures Prices and Yield Realizations
+
+These are used to calculate revenue from spot sales at 2024 harvest.
+
+```{r}
+# change to todayPriceNew to open game again
+game_draw <- read.csv('game_draw.csv')
+select(game_draw , c(2,6:12)) %>%
+#todayPricesNew %>%  
+ knitr::kable()
+
+
+
+```
+
 # Components of Total Revenue
 
 ## Futures Trades Profit and Loss
@@ -74,13 +91,14 @@ futuresPNL %>%
   });
   </script>
 ```
-
 ## Revenue from Spot and Forward Sales of 2023 Bushels and Forward Sales of 2024 Bushels
 
-Figures are rounded to nearest dollar. 
+Figures are rounded to nearest dollar.
+
 ```{r}
 # Spot/forward Sales revanue
 corn_spot_forward_Revenue <- read.csv("Corn_spotforward_sales.csv") %>% 
+  mutate(across(everything(), ~replace(., is.na(.), 0))) %>% 
   mutate(Cspot23 = X23.Corn.Spot.Sales*X23.Corn.Spot.Ave.Price,
          Cforward23 = X23.Corn.Forward.Sales*X23.Corn.Forward.Ave.Price,
          Cforward24 = X24.Corn.Forward.Sales*X24.Corn.Forward.Ave.Price) %>% 
@@ -88,22 +106,26 @@ corn_spot_forward_Revenue <- read.csv("Corn_spotforward_sales.csv") %>%
 
 
 sobyean_spot_forward_Revenue <- read.csv("Soybean_spotforward_sales.csv") %>% 
+   mutate(across(everything(), ~replace(., is.na(.), 0))) %>% 
   mutate(Sspot23 = X23.Soybean.Spot.Sales*X23.Soybean.Spot.Ave.Price,
          Sforward23 = X23.Soybean.Forward.Sales*X23.Soybean.Forward.Ave.Price,
          Sforward24 = X24.Soybean.Forward.Sales*X24.Soybean.Forward.Ave.Price) %>% 
   select(c(2, 9:11))
 
 wheat_spot_forward_Revenue <- read.csv("Wheat_forward_sales.csv") %>% 
+   mutate(across(everything(), ~replace(., is.na(.), 0))) %>% 
   mutate(Wforward24 = X24.Wheat.Forward.Sales*X24.Wheat.Forward.Ave.Price) %>% 
   select(c(2, 5))
 
 
 # Revenue in dollars from 23 spot and forward sales, plus 24 forward contracts
 spot_forward_rev <- corn_spot_forward_Revenue %>% 
+   mutate(across(everything(), ~replace(., is.na(.), 0))) %>% 
   inner_join(sobyean_spot_forward_Revenue, by = "Partial.Email") %>% 
   inner_join(wheat_spot_forward_Revenue, by = "Partial.Email")
 
 spot_forward_rev  %>% 
+  mutate(across(everything(), ~replace(., is.na(.), 0))) %>% 
   mutate(across(where(is.numeric), ~comma(round(., 0), accuracy = 1))) %>%
   knitr::kable("html", table.attr = "id='spotforward'") 
 
@@ -116,8 +138,6 @@ spot_forward_rev  %>%
   });
   </script>
 ```
-
-
 
 ```{r}
 ## Expected Bushels Based on Acreage Choices for Different Crops and Practices
@@ -133,34 +153,39 @@ bushels <- read.csv("acreage.csv") %>%
          DSoybeans_Expected_Bushels = Double.Crop.Soybean*expected_yields$dcb) %>% 
   select(c(3, 9:13))
 
+# Realized bushels to be used in spot calculations and insurance payments later
+# note that we left the names 'expected_bushels' for convenience, when used in bushels_gameclose below it is realized not expected bushels
+
+bushels_gameclose <- read.csv("acreage.csv") %>% 
+  mutate(CCorn_Expected_Bushels = Continuous.Corn*game_draw$Yield_Corn*expected_yields$cc/expected_yields$rc,
+         RCorn_Expected_Bushels = Rotational.Corn*game_draw$Yield_Corn,
+         RSoybean_Expected_Bushels = Soybean*game_draw$Yield_Soybean,
+         Wheat_Expected_Bushels = Wheat*game_draw$Yield_Wheat,
+         DSoybeans_Expected_Bushels = Double.Crop.Soybean*game_draw$Yield_Soybean*expected_yields$dcb/expected_yields$rb) %>% 
+  select(c(3, 9:13))
+
 # bushels %>% 
 #   kable("html", escape = FALSE) %>%
 #   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
 
 ```
 
-## Revenue from New Crop Spot Sales 
-
-### Latest New Crop Futures Prices
-
-These are used to calculate expected revenue from spot sales at 2024 harvest.
-```{r}
-
-todayPricesNew %>%  
- knitr::kable()
+## Revenue from New Crop Spot Sales
 
 
-```
 
-### Expected Revenue for Spot Sales at 2024 Harvest
+### Revenue for Spot Sales at 2024 Harvest
 
-Expected bushels available for spot sales at harvest are total expected bushels minus any bushels forward contracted. E.g., Expected Bushels - 2024 Forward Contracted Bushels. Then, this number is multiplied by the current new crop futures prices to get expected revenue from spot sales at 2024 harvest. 
+Expected bushels available for spot sales at harvest are total expected bushels minus any bushels forward contracted. E.g., Expected Bushels - 2024 Forward Contracted Bushels. Then, this number is multiplied by the current new crop futures prices to get expected revenue from spot sales at 2024 harvest.
+
+
 
 ```{r}
 # Calculate expected revenue from spot sales at 2024 harvest
 new_crop_spot <- bushels %>% inner_join( read.csv("Corn_spotforward_sales.csv") %>% select(c(2, 7)), by = "Partial.Email") %>% 
   inner_join(read.csv("Soybean_spotforward_sales.csv") %>% select(2, 7), by = "Partial.Email") %>% 
   inner_join( read.csv("Wheat_forward_sales.csv") %>% select(2,3), by = "Partial.Email") %>%
+  mutate(across(everything(), ~replace(., is.na(.), 0))) %>% 
   mutate(SpotCorn_Bushels = CCorn_Expected_Bushels + RCorn_Expected_Bushels - X24.Corn.Forward.Sales,
          SpotSoy_Bushels = RSoybean_Expected_Bushels + DSoybeans_Expected_Bushels - X24.Soybean.Forward.Sales,
          SpotWheat_Bushels = Wheat_Expected_Bushels - X24.Wheat.Forward.Sales) %>% 
@@ -168,6 +193,26 @@ new_crop_spot <- bushels %>% inner_join( read.csv("Corn_spotforward_sales.csv") 
   mutate(Exp_New_Corn_Rev = SpotCorn_Bushels*todayPricesNew$ZC/100,
          Exp_New_Soy_Rev = SpotSoy_Bushels*todayPricesNew$ZS/100,
          Exp_New_Wheat_Rev = SpotWheat_Bushels*todayPricesNew$ZW/100) %>% 
+  select(c(1, 5:7))
+
+# new_crop_spot   %>% 
+#   mutate(across(where(is.numeric), ~comma(round(., 0), accuracy = 1))) %>%
+#  knitr::kable("html", table.attr = "id='newcropspot'") 
+
+
+# Use this to close the game/comment out if not time to close game
+
+new_crop_spot <- bushels_gameclose %>% inner_join( read.csv("Corn_spotforward_sales.csv") %>% select(c(2, 7)), by = "Partial.Email") %>% 
+  inner_join(read.csv("Soybean_spotforward_sales.csv") %>% select(2, 7), by = "Partial.Email") %>% 
+  inner_join( read.csv("Wheat_forward_sales.csv") %>% select(2,3), by = "Partial.Email") %>%
+  mutate(across(everything(), ~replace(., is.na(.), 0))) %>% 
+  mutate(SpotCorn_Bushels = CCorn_Expected_Bushels + RCorn_Expected_Bushels - X24.Corn.Forward.Sales,
+         SpotSoy_Bushels = RSoybean_Expected_Bushels + DSoybeans_Expected_Bushels - X24.Soybean.Forward.Sales,
+         SpotWheat_Bushels = Wheat_Expected_Bushels - X24.Wheat.Forward.Sales) %>% 
+  select(c(1, 10:12)) %>% 
+  mutate(Exp_New_Corn_Rev = SpotCorn_Bushels*game_draw$Price_Corn,
+         Exp_New_Soy_Rev = SpotSoy_Bushels*game_draw$Price_Soybean,
+         Exp_New_Wheat_Rev = SpotWheat_Bushels*game_draw$Price_Wheat) %>% 
   select(c(1, 5:7))
 
 new_crop_spot   %>% 
@@ -184,14 +229,68 @@ new_crop_spot   %>%
   </script>
 ```
 
-
-
 ## Crop Insurance Indemnity Payment
 
-Coming soon
+
 
 ```{r}
+ci_corn <- 4.66
+ci_soy <- 11.55
 
+
+
+# Per Acre Insurance Payouts
+
+
+
+# 90% was only coverage option
+CCorn_CI_Payment <- max(0, max(ci_corn, game_draw$Price_Corn)*expected_yields$cc*.9 - game_draw$Price_Corn*game_draw$Yield_Corn*expected_yields$cc/expected_yields$rc )
+
+RCorn_CI_Payment <- max(0, max(ci_corn, game_draw$Price_Corn)*expected_yields$rc*.9 - game_draw$Price_Corn*game_draw$Yield_Corn )
+
+RSoybean_CI_Payment <- max(0, max(ci_soy, game_draw$Price_Soybean)*expected_yields$rb*.9 - game_draw$Price_Soybean*game_draw$Yield_Soybean )
+
+# Number of Insured Acres Chosen by participant
+prop <- read.csv('prop_insured_acreage.csv') %>% select(-c(X, Timestamp))  
+acres <- read.csv('acreage.csv') %>% select(-c(X, Timestamp)) 
+ins_acres <- left_join(prop, acres, by = 'Partial.Email')
+
+ins_acres <- ins_acres %>%
+  mutate(
+    InsuredAcres_ContinuousCorn = Continuous.Corn.x/100 * Continuous.Corn.y,
+    InsuredAcres_RotationalCorn = Rotational.Corn.x/100 * Rotational.Corn.y,
+    InsuredAcres_Soybean = Soybean.x/100 * Soybean.y,
+    InsuredAcres_Wheat = Wheat.x/100 * Wheat.y
+  ) %>%
+  select(Partial.Email, 
+         InsuredAcres_ContinuousCorn, 
+         
+         
+         InsuredAcres_RotationalCorn, 
+         InsuredAcres_Soybean, 
+         InsuredAcres_Wheat)  %>% 
+  mutate(across(everything(), ~replace(., is.na(.), 0)))
+
+
+Insurance_Payments <- ins_acres %>% 
+  mutate(
+    # Calculating CI payments based on insured acres and pre-defined per acre payment logic
+    Corn_CI_Payment = InsuredAcres_ContinuousCorn * CCorn_CI_Payment,
+    RCorn_CI_Payment = InsuredAcres_RotationalCorn * RCorn_CI_Payment,
+    RSoybean_CI_Payment = InsuredAcres_Soybean * RSoybean_CI_Payment
+  ) %>% 
+  select(-(2:5))
+  
+ Insurance_Payments %>%
+ knitr::kable("html", table.attr = "id='ins_pmt'") 
+```
+
+```{=html}
+<script>
+  $(document).ready( function () {
+      $('#newcropspot').DataTable();
+  });
+  </script>
 ```
 
 # Aggregating all Revenue Sources
@@ -200,10 +299,11 @@ Coming soon
 total <- futuresPNL %>% 
   inner_join(spot_forward_rev, by = "Partial.Email") %>%
   inner_join(new_crop_spot, by = "Partial.Email") %>% 
+  inner_join(Insurance_Payments, by = 'Partial.Email') %>% 
   mutate(`Total PNL` = rowSums(select(., -"Partial.Email"), na.rm = TRUE))
 
 total %>%
-  select(c(2, 20)) %>% 
+  select(c(2, 23)) %>% 
   mutate(across(where(is.numeric), ~comma(round(., 0), accuracy = 1))) %>%
  knitr::kable("html", table.attr = "id='allrev'") 
 
@@ -216,9 +316,7 @@ total %>%
   });
   </script>
 ```
-
-
-## Aggregate Revenue Detailed View 
+## Aggregate Revenue Detailed View
 
 ```{r}
 total  %>% 

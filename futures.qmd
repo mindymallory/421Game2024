@@ -14,7 +14,6 @@ title: "Futures Trades"
 
 ## Top
 
-
 ```{r setup}
 #| include: false
 
@@ -103,12 +102,16 @@ DATANew <- DATA %>% mutate (closeSpot = case_when(symbol == "ZC" ~ close + (.05*
                                        symbol == "ZW" ~ close + (.05*exp(close/100 - 600/100) - 25/100)*100))
 todayPricesNew <- DATANew %>% select(-closeSpot) %>% pivot_wider(names_from = symbol, values_from = close) %>% arrange(Date) %>% last()
 
+# To close game replace todayPricesNew with game_draw prices
+game_draw <- read.csv('game_draw.csv')
+game_draw <- game_draw %>% select(c(6:8))
+todayPricesNew[,2:4] <- game_draw
 ```
 
 # Corn
 
 ## All Trades in May Corn
-  
+
 ```{r}
 
 tableZCK <- left_join(my_sheet,  
@@ -133,7 +136,6 @@ tableZCK %>%
 
 ```
 
-
 ```{=html}
 <script>
   $(document).ready( function () {
@@ -141,11 +143,9 @@ tableZCK %>%
   });
   </script>
 ```
-
-
 ## Net Profit/Loss in May Corn
 
-This number includes both closed trades and open trades. Open positions are found in the Net Position column. Net Position is in bushels, PNL is in dollars. 
+This number includes both closed trades and open trades. Open positions are found in the Net Position column. Net Position is in bushels, PNL is in dollars.
 
 ```{r}
 
@@ -174,7 +174,6 @@ tableZCK  %>%
 
 ```
 
-
 ```{=html}
 <script>
   $(document).ready( function () {
@@ -182,9 +181,8 @@ tableZCK  %>%
   });
   </script>
 ```
-  
 ## All Trades in Dec Corn
-  
+
 ```{r}
 
 tableZCZ <- left_join(my_sheet,  
@@ -205,7 +203,6 @@ tableZCZ   %>%
 
 ```
 
-
 ```{=html}
 <script>
   $(document).ready( function () {
@@ -213,10 +210,9 @@ tableZCZ   %>%
   });
   </script>
 ```
-
 ## Net Profit/Loss in December Corn
 
-This number includes both closed trades and open trades. Open positions are found in the Net Position column. Net Position is in bushels, PNL is in dollars. 
+This number includes both closed trades and open trades. Open positions are found in the Net Position column. Net Position is in bushels, PNL is in dollars.
 
 ```{r}
 
@@ -245,7 +241,6 @@ tableZCZ   %>%
 
 ```
 
-
 ```{=html}
 <script>
   $(document).ready( function () {
@@ -253,10 +248,10 @@ tableZCZ   %>%
   });
   </script>
 ```
-
 # Soybeans
+
 ## All Trades in May Soybeans
-  
+
 ```{r}
 
 tableZSK <- left_join(my_sheet,  
@@ -281,7 +276,6 @@ tableZSK %>%
 
 ```
 
-
 ```{=html}
 <script>
   $(document).ready( function () {
@@ -289,11 +283,9 @@ tableZSK %>%
   });
   </script>
 ```
-
-
 ## Net Profit/Loss in May Soybeans
 
-This number includes both closed trades and open trades. Open positions are found in the Net Position column. Net Position is in bushels, PNL is in dollars. 
+This number includes both closed trades and open trades. Open positions are found in the Net Position column. Net Position is in bushels, PNL is in dollars.
 
 ```{r}
 
@@ -322,7 +314,6 @@ tableZSK  %>%
 
 ```
 
-
 ```{=html}
 <script>
   $(document).ready( function () {
@@ -330,9 +321,8 @@ tableZSK  %>%
   });
   </script>
 ```
-
 ## All Trades in December Soybeans
-  
+
 ```{r}
 
 tableZSX <- left_join(my_sheet,  
@@ -357,7 +347,6 @@ tableZSX %>%
 
 ```
 
-
 ```{=html}
 <script>
   $(document).ready( function () {
@@ -365,10 +354,9 @@ tableZSX %>%
   });
   </script>
 ```
-
 ## Net Profit/Loss in December Soybeans
 
-This number includes both closed trades and open trades. Open positions are found in the Net Position column. Net Position is in bushels, PNL is in dollars. 
+This number includes both closed trades and open trades. Open positions are found in the Net Position column. Net Position is in bushels, PNL is in dollars.
 
 ```{r}
 
@@ -397,7 +385,6 @@ tableZSX  %>%
 
 ```
 
-
 ```{=html}
 <script>
   $(document).ready( function () {
@@ -405,11 +392,10 @@ tableZSX  %>%
   });
   </script>
 ```
-
 # Wheat
 
 ## All Trades in May Wheat
-  
+
 ```{r}
 
 tableZWK <- left_join(my_sheet,  
@@ -434,7 +420,6 @@ tableZWK %>%
 
 ```
 
-
 ```{=html}
 <script>
   $(document).ready( function () {
@@ -442,11 +427,9 @@ tableZWK %>%
   });
   </script>
 ```
-
-
 ## Net Profit/Loss in May Wheat
 
-This number includes both closed trades and open trades. Open positions are found in the Net Position column. Net Position is in bushels, PNL is in dollars. 
+This number includes both closed trades and open trades. Open positions are found in the Net Position column. Net Position is in bushels, PNL is in dollars.
 
 ```{r}
 
@@ -475,7 +458,6 @@ tableZWK  %>%
 
 ```
 
-
 ```{=html}
 <script>
   $(document).ready( function () {
@@ -483,10 +465,8 @@ tableZWK  %>%
   });
   </script>
 ```
-
-
 ## All Trades in December Wheat
-  
+
 ```{r}
 
 tableZWZ <- left_join(my_sheet,  
@@ -511,7 +491,6 @@ tableZWZ %>%
 
 ```
 
-
 ```{=html}
 <script>
   $(document).ready( function () {
@@ -519,11 +498,9 @@ tableZWZ %>%
   });
   </script>
 ```
-
-
 ## Net Profit/Loss in December Wheat
 
-This number includes both closed trades and open trades. Open positions are found in the Net Position column. Net Position is in bushels, PNL is in dollars. 
+This number includes both closed trades and open trades. Open positions are found in the Net Position column. Net Position is in bushels, PNL is in dollars.
 
 ```{r}
 
@@ -552,7 +529,6 @@ tableZWZ  %>%
 
 ```
 
-
 ```{=html}
 <script>
   $(document).ready( function () {
@@ -560,8 +536,7 @@ tableZWZ  %>%
   });
   </script>
 ```
-
-# Summary of PNL for All Contracts 
+# Summary of PNL for All Contracts
 
 ```{r}
 summaryPNL <- tableZCK %>% 

@@ -79,6 +79,7 @@ styled_table <- processed_data %>%
 
 # Print the table (useful for a Quarto or R Markdown document)
 
+write.csv(processed_data, file = "prop_insured_acreage.csv")
 
 styled_table
 ```
