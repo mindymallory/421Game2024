@@ -50,3 +50,48 @@ DATA %>%
   
   geom_line(size = 1)
 ```
+
+```{r}
+c_percent_spread <- read.csv(
+  url(paste0("http://ondemand.websol.barchart.com/getHistory.csv?apikey=", 
+             barchart_key ,
+             "&symbol=ZC*1&type=dailyNearest&startDate=20000101"))
+  ) %>%
+  mutate(Date = as.Date(tradingDay)) %>% 
+  select(Date, close) %>% 
+  inner_join(
+    read.csv(url(paste0("http://ondemand.websol.barchart.com/getHistory.csv?apikey=", 
+                        barchart_key,"&symbol=ZC*2&type=dailyNearest&startDate=20000101"))
+             ) %>%
+  mutate(Date = as.Date(tradingDay)) %>% 
+  select(Date, close), by = 'Date') %>% 
+  mutate(spread = close.x - close.y) %>% 
+  mutate(percent_spread = (close.x - close.y)/close.x) %>% 
+  select(Date, spread, percent_spread)
+  
+s_percent_spread <- read.csv(
+  url(paste0("http://ondemand.websol.barchart.com/getHistory.csv?apikey=", 
+             barchart_key ,
+             "&symbol=ZS*1&type=dailyNearest&startDate=20000101"))
+  ) %>%
+  mutate(Date = as.Date(tradingDay)) %>% 
+  select(Date, close) %>% 
+  inner_join(
+    read.csv(url(paste0("http://ondemand.websol.barchart.com/getHistory.csv?apikey=", 
+                        barchart_key,"&symbol=ZS*2&type=dailyNearest&startDate=20000101"))
+             ) %>%
+  mutate(Date = as.Date(tradingDay)) %>% 
+  select(Date, close), by = 'Date') %>%
+  mutate(spread = close.x - close.y) %>% 
+  mutate(percent_spread = (close.x - close.y)/close.x) %>% 
+  select(Date, spread, percent_spread)
+
+calendar_spreads <- inner_join(c_percent_spread, s_percent_spread, by = 'Date')
+
+colnames(calendar_spreads) <- c("Date", "Corn_Cal_Spread", "Corn_Cal_Spread_Perc", "Soy_Cal_Spread", "Soy_Cal_Spread_Perc")
+
+calendar_spreads %>% pivot_longer(cols = -Date, names_to = 'C_S', values_to = 'Spread') %>% 
+  ggplot(aes(x = Date, y = Spread, color = C_S)) + geom_line()
+
+calendar_spreads %>% write.csv(file = "calendar_spreads.csv")
+```
