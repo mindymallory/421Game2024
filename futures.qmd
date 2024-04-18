@@ -75,9 +75,9 @@ DATA <- rbind(DATA1, DATA2, DATA3)
 
 DATAK <- DATA %>% mutate (closeSpot = case_when(symbol == "ZC" ~ close + (.05*exp(close/100 - 450/100) - 25/100)*100,
                                        symbol == "ZS" ~ close + (.05*exp(close/100 - 1260/100) - 50/100)*100,
-                                       symbol == "ZW" ~ close + (.05*exp(close/100 - 600/100) - 25/100)*100))
+                                       symbol == "ZW" ~ close + (.05*exp(close/100 - 600/100) - 25/100)*100)) %>% filter(Date <= as.Date("2024-04-09"))  # Closed game on April 9
 
-todayPricesK <- DATAK %>% select(-closeSpot) %>% pivot_wider(names_from = symbol, values_from = close) %>% arrange(Date) %>% last()
+todayPricesK <- DATAK %>% select(-closeSpot) %>% pivot_wider(names_from = symbol, values_from = close) %>% arrange(Date) %>% filter(Date <= as.Date("2024-04-09")) %>% last() # Closed game on April 9
 ###########
 # New Crop
 DATA1 <- read.csv(url(paste0("http://ondemand.websol.barchart.com/getHistory.csv?apikey=", barchart_key ,"&symbol=ZCZ24&type=daily&startDate=20190101"))) %>%
@@ -99,8 +99,8 @@ DATA <- rbind(DATA1, DATA2, DATA3)
 
 DATANew <- DATA %>% mutate (closeSpot = case_when(symbol == "ZC" ~ close + (.05*exp(close/100 - 450/100) - 25/100)*100,
                                        symbol == "ZS" ~ close + (.05*exp(close/100 - 1260/100) - 50/100)*100,
-                                       symbol == "ZW" ~ close + (.05*exp(close/100 - 600/100) - 25/100)*100))
-todayPricesNew <- DATANew %>% select(-closeSpot) %>% pivot_wider(names_from = symbol, values_from = close) %>% arrange(Date) %>% last()
+                                       symbol == "ZW" ~ close + (.05*exp(close/100 - 600/100) - 25/100)*100)) %>% filter(Date <= as.Date("2024-04-09")) 
+todayPricesNew <- DATANew %>% select(-closeSpot) %>% pivot_wider(names_from = symbol, values_from = close) %>% arrange(Date) %>% filter(Date <= as.Date("2024-04-09"))  %>% last()
 
 # To close game replace todayPricesNew with game_draw prices
 game_draw <- read.csv('game_draw.csv')
