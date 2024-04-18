@@ -299,7 +299,7 @@ Insurance_Payments <- ins_acres %>%
 total <- futuresPNL %>% 
   inner_join(spot_forward_rev, by = "Partial.Email") %>%
   inner_join(new_crop_spot, by = "Partial.Email") %>% 
-  inner_join(Insurance_Payments, by = 'Partial.Email') %>% 
+  left_join(Insurance_Payments, by = 'Partial.Email') %>% 
   mutate(`Total PNL` = rowSums(select(., -"Partial.Email"), na.rm = TRUE))
 
 total %>%
